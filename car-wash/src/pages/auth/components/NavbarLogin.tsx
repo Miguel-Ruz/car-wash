@@ -8,7 +8,7 @@ const NavbarLogin = () => {
     <Box as="header">
       <Flex
         as="nav"
-        backgroundColor="primaryColor"
+        backgroundColor="secondColor"
         height="5rem"
         align="center"
         padding="8"

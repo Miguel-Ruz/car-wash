@@ -1,12 +1,16 @@
-import { extendTheme } from '@chakra-ui/react';
+import { extendTheme } from "@chakra-ui/react";
 
+const theme = extendTheme({
+  colors: {
+    mainColor: "#FFFFFF",
+    primaryColor: "#F7FAFC",
+    secondaryColor: "#EDE8F0",
+    buttonColor: "#319795"
+  },
+  fonts: {
+    heading: `'Inter', sans-serif`,
+    body: `'Inter', sans-serif`,
+  },
+});
 
-const theme = extendTheme({ 
-    colors: {
-        primaryColor: "#F7FAFC",
-        secondColor: "#EDF2F7"
-
-    }
- });
-
- export default theme;
+export default theme;
