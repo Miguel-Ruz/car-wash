@@ -13,6 +13,18 @@ import { AvatarLogin, LoginCard, NavbarLogin } from "./components";
 
 const index = () => {
   const [activeButton, setActiveButton] = useState<boolean>(false);
+  const [opacityCard, setOpacityCard] = useState<string>("0.5");
+
+
+  const users = [
+    { id: 1, tipo: "Admin" },
+    { id: 2, tipo: "Regular" },
+  ];
+
+  const handleClickUser = (e: React.MouseEvent<HTMLDivElement>) => {
+    setActiveButton(true);
+    setOpacityCard("1")
+  };
 
   return (
     <>
@@ -26,13 +38,22 @@ const index = () => {
         backgroundColor="primaryColor"
       >
         <LoginCard>
-          <Heading as="h2" size="md" noOfLines={1}>
+          <Heading as="h2" size="md" noOfLines={1} color="fontColor">
             ¿Qué rol tienes?
           </Heading>
 
           <Flex justify="space-between" w="288px" h="168px">
-            <AvatarLogin typeUser="Admin" name="admin" />
-            <AvatarLogin typeUser="Regular" />
+            {users.map((user) => {
+              return (
+                <AvatarLogin
+                  key={user.id}
+                  typeUser={user.tipo}
+                  name={user.tipo}
+                  handleCLick={handleClickUser}
+                  opacityCard={opacityCard}
+                />
+              );
+            })}
           </Flex>
           <Button disabled={!activeButton} color="#FFF" bg="buttonColor">
             Continuar

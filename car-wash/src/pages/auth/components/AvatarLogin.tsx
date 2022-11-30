@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Avatar, Text, VStack } from "@chakra-ui/react";
 
 type Props = {
   typeUser: string;
   name?: string;
+  handleCLick?: React.MouseEventHandler<HTMLSpanElement>;
+  opacityCard?: string;
 };
 
-function AvatarLogin({ typeUser, name }: Props) {
+function AvatarLogin({ typeUser, name, handleCLick, opacityCard }: Props) {
   return (
-    <VStack>
-      <Avatar size="2xl" name={name} cursor="pointer" />
+    <VStack opacity={opacityCard}>
+      <Avatar size="2xl" name={name} cursor="pointer" onClick={handleCLick} />
       <Text color="#718096">{typeUser}</Text>
     </VStack>
   );
