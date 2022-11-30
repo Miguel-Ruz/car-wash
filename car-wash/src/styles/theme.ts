@@ -5,7 +5,8 @@ const theme = extendTheme({
     mainColor: "#FFFFFF",
     primaryColor: "#F7FAFC",
     secondaryColor: "#EDE8F0",
-    buttonColor: "#319795"
+    buttonColor: "#319795",
+    fontColor: "#2D3748",
   },
   fonts: {
     heading: `'Inter', sans-serif`,
