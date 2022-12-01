@@ -7,6 +7,7 @@ const theme = extendTheme({
     secondaryColor: "#EDE8F0",
     buttonColor: "#319795",
     fontColor: "#2D3748",
+    navTitleColor: "#4A5568",
   },
   fonts: {
     heading: `'Inter', sans-serif`,
