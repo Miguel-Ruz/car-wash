@@ -1,9 +1,11 @@
-import { NavBar } from "../components";
+import { DashboardLayout, NavBar } from "../components";
 
 export default function Home() {
   return (
     <div>
-      <NavBar />
+      <DashboardLayout>
+        <h2>hola</h2>
+      </DashboardLayout>
     </div>
   );
 }
