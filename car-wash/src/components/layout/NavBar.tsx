@@ -18,6 +18,7 @@ type Props = {};
 const NavBar = (props: Props) => {
   return (
     <Flex
+    as="nav"
       align="center"
       justify="space-between"
       paddingTop="16px"
