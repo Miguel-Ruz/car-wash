@@ -24,9 +24,9 @@ const NavBar = (props: Props) => {
       paddingBottom="16px"
       paddingRight="24px"
       paddingLeft="24px"
-      w="65.438rem"
+      w="87vw"
       borderBottom="1px solid #E2E8F0"
-      marginLeft="19rem"
+      marginLeft="14.563rem"
     >
       <Text
         fontSize="xs"
