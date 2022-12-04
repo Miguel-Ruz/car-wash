@@ -6,15 +6,17 @@ type Props = {};
 function SideBar({}: Props) {
   return (
     <Flex
+      as="aside"
       h="100vh"
-      border="1px solid red"
       width="13vw"
       paddingTop="16px"
       paddingBottom="16px"
       paddingRight="24px"
       paddingLeft="24px"
+      bg="primaryColor"
+      borderRight="1px solid #E2E8F0"
     >
-      SideBar
+        
     </Flex>
   );
 }
