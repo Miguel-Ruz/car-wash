@@ -25,16 +25,17 @@ const NavBar = (props: Props) => {
       paddingRight="24px"
       paddingLeft="24px"
       w="87vw"
+      h="4rem"
       borderBottom="1px solid #E2E8F0"
-      marginLeft="14.563rem"
     >
       <Text
         fontSize="xs"
         color="navTitleColor"
         bg="#EDF2F7"
         w="49px"
-      fontWeight="semibold"
-        p="4px"
+        h="18px"
+        fontWeight="semibold"
+        textAlign="center"
       >
         ADMIN
       </Text>
