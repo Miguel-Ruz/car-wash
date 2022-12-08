@@ -6,6 +6,7 @@ import {
   UnorderedList,
 } from "@chakra-ui/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useMemo } from "react";
 import logo from "../../../public/logo.svg";
@@ -49,25 +50,28 @@ function SideBar({}: Props) {
       >
         {navPage.map((page) => {
           return (
-            <ListItem
-              w="11.563rem"
-              h="2.75rem"
-              p="10px"
-              bg={activeMenu?.id === page.id ? "hoverSideBard" : ""}
-              key={page.id}
-              display="flex"
-              alignItems="center"
-              columnGap="8px"
-              _hover={{
-                background: "hoverSideBard",
-                color: "hoverTextColor",
-              }}
-            >
-              <Image src={page.icon} alt="logo" color="fontColor" />
-              <Text fontSize="sm" color="fontColor" fontWeight="semibold">
-                {page.pageName}
-              </Text>
-            </ListItem>
+            <Link href={page.link} key={page.id}>
+              <ListItem
+                w="11.563rem"
+                h="2.75rem"
+                p="10px"
+                bg={activeMenu?.id === page.id ? "hoverSideBard" : ""}
+                key={page.id}
+                display="flex"
+                alignItems="center"
+                columnGap="8px"
+                cursor="pointer"
+                _hover={{
+                  background: "hoverSideBard",
+                  color: "hoverTextColor",
+                }}
+              >
+                <Image src={page.icon} alt="logo" color="fontColor" />
+                <Text fontSize="sm" color="fontColor" fontWeight="semibold">
+                  {page.pageName}
+                </Text>
+              </ListItem>
+            </Link>
           );
         })}
       </UnorderedList>
