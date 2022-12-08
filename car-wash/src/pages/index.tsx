@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div>
       <DashboardLayout>
-        <h2>hola</h2>
+        <h1>dashboard</h1>
       </DashboardLayout>
     </div>
   );
