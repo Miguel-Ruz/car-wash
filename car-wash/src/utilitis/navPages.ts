@@ -7,7 +7,7 @@ import users from "../../public/users.svg"
 interface INavPages {
   id: number;
   pageName: string;
-  icon?:string;
+  icon:string;
   link: string;
 }
 /* interface INavPages extends Array<INavPages> {} */
