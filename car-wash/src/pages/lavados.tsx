@@ -1,10 +1,13 @@
 import React from 'react'
+import { DashboardLayout } from '../components'
 
 type Props = {}
 
 const lavados = (props: Props) => {
   return (
-    <div>lavados</div>
+    <DashboardLayout>
+      <h1>lavados</h1>
+    </DashboardLayout>
   )
 }
 
