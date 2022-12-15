@@ -10,6 +10,8 @@ const theme = extendTheme({
     navTitleColor: "#4A5568",
     hoverSideBard: "#E6FFFA",
     hoverTextColor: "#285E61",
+    bgCardDashboradColor:
+      "radial-gradient(78.48% 1710.23% at 1.55% 50%, #319795 0%, #87DFCA 57.81%, #87DFD5 100%)",
   },
   fonts: {
     heading: `'Inter', sans-serif`,
