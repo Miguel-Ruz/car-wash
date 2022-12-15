@@ -2,6 +2,7 @@ import { Box, Container, Heading, Flex, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import { DashboardLayout } from "../components";
 import logo from "../../public/logoDash.png";
+import { CardInfoDashboard } from "../components/dashboard";
 
 export default function Home() {
   return (
@@ -43,6 +44,10 @@ export default function Home() {
 
               <Image src={logo} alt="logo de la app" />
             </Flex>
+          </Box>
+
+          <Box p="24px">
+            <CardInfoDashboard />
           </Box>
         </div>
       </DashboardLayout>
