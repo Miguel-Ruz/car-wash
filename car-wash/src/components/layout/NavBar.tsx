@@ -31,7 +31,7 @@ const NavBar = (props: Props) => {
     >
       <Text
         fontSize="xs"
-        color="navTitleColor"
+        color="fontNavColor"
         bg="#EDF2F7"
         w="49px"
         h="18px"

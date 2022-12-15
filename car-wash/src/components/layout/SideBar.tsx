@@ -50,7 +50,7 @@ function SideBar({}: Props) {
           return (
             <Link href={page.link} key={page.id}>
               <ListItem
-                w="11.563rem"
+                w="100%"
                 h="2.75rem"
                 p="10px"
                 bg={activeMenu?.id === page.id ? "hoverSideBard" : ""}
@@ -65,7 +65,7 @@ function SideBar({}: Props) {
                 }}
               >
                 <Image src={page.icon} alt="logo" color="fontColor" />
-                <Text fontSize="sm" color="fontColor" fontWeight="semibold">
+                <Text fontSize="sm" color="fontNavColor" fontWeight="semibold">
                   {page.pageName}
                 </Text>
               </ListItem>
