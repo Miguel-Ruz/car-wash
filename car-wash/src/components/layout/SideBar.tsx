@@ -22,8 +22,6 @@ function SideBar({}: Props) {
     [router.pathname]
   );
 
-  console.log(activeMenu);
-
   return (
     <Flex
       as="aside"
