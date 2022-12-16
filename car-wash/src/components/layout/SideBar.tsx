@@ -27,17 +27,14 @@ function SideBar({}: Props) {
       as="aside"
       h="100vh"
       width="13vw"
-      paddingTop="16px"
-      paddingBottom="16px"
-      paddingRight="24px"
-      paddingLeft="24px"
+      padding="16px 24px"
       bg="primaryColor"
       borderRight="1px solid #E2E8F0"
       direction="column"
       rowGap="64px"
       align="center"
     >
-      <Flex h="3rem" w="11.563rem">
+      <Flex>
         <Image src={logo} alt="logo de la app" />
       </Flex>
       <UnorderedList
@@ -45,12 +42,13 @@ function SideBar({}: Props) {
         rowGap="18px"
         display="flex"
         flexDirection="column"
+        w="100%"
       >
         {navPage.map((page) => {
           return (
             <Link href={page.link} key={page.id}>
               <ListItem
-                w="100%"
+                w=""
                 h="2.75rem"
                 p="10px"
                 bg={activeMenu?.id === page.id ? "hoverSideBard" : ""}
@@ -59,6 +57,7 @@ function SideBar({}: Props) {
                 alignItems="center"
                 columnGap="8px"
                 cursor="pointer"
+                borderRadius="6px"
                 _hover={{
                   background: "hoverSideBard",
                   color: "hoverTextColor",
