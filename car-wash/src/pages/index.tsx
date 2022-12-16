@@ -37,7 +37,7 @@ export default function Home() {
             >
               <Flex direction="column" color="mainColor" rowGap="16px">
                 <Heading size="xl">Mav Wash</Heading>
-                <Text fontSize="lg" color=" rgba(255, 255, 255, 0.8)">
+                <Text fontSize="lg" color=" rgba(255, 255, 255, 0.8)" fontWeight="semibold">
                   Estas son las estadisticas
                 </Text>
               </Flex>
@@ -46,9 +46,26 @@ export default function Home() {
             </Flex>
           </Box>
 
-          <Box p="24px">
-            <CardInfoDashboard />
-          </Box>
+          <Flex p="0 24px" columnGap="1.25rem">
+            <CardInfoDashboard
+              bgColor="#F0FFF4"
+              bgIconColor="#C6F6D5"
+              title="Lavados del día"
+              amount={25}
+            />
+            <CardInfoDashboard
+              bgColor="#EBF8FF"
+              bgIconColor="#BEE3F8"
+              title="Lavados del día"
+              amount={1000000}
+            />
+            <CardInfoDashboard
+              bgColor="#FAF5FF"
+              bgIconColor="#E9D8FD"
+              title="Lavados del día"
+              amount={10000000}
+            />
+          </Flex>
         </div>
       </DashboardLayout>
     </div>
