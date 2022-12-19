@@ -2,7 +2,7 @@ import { Box, Container, Heading, Flex, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import { DashboardLayout } from "../components";
 import logo from "../../public/logoDash.png";
-import { CardInfoDashboard } from "../components/dashboard";
+import { CardInfoDashboard, DataTableDashboard } from "../components/dashboard";
 
 export default function Home() {
   return (
@@ -66,6 +66,7 @@ export default function Home() {
               amount={10000000}
             />
           </Flex>
+          <DataTableDashboard />
         </div>
       </DashboardLayout>
     </div>
