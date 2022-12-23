@@ -1,4 +1,4 @@
-import { Box, Container, Heading, Flex, Text } from "@chakra-ui/react";
+import { Box, Heading, Flex, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import { DashboardLayout } from "../components";
 import logo from "../../public/logoDash.png";
@@ -42,7 +42,7 @@ export default function Home() {
                 </Text>
               </Flex>
 
-              <Image src={logo} alt="logo de la app" />
+              <Image src={logo} alt="logo de la app" priority/>
             </Flex>
           </Box>
 
