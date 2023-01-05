@@ -3,24 +3,14 @@ import Image from "next/image";
 import { DashboardLayout } from "../components";
 import logo from "../../public/logoDash.png";
 import { CardInfoDashboard, DataTableDashboard } from "../components/dashboard";
+import TopBar from "../components/common/TopBar";
 
 export default function Home() {
   return (
     <div>
       <DashboardLayout>
         <div>
-          <Box
-            as="header"
-            paddingTop="16px"
-            paddingBottom="16px"
-            paddingRight="24px"
-            paddingLeft="24px"
-            borderBottom="1px solid #E2E8F0"
-          >
-            <Heading size="md" color="fontColor" fontWeight="semibold">
-              Dashboard
-            </Heading>
-          </Box>
+          <TopBar title="Dashboard" />
 
           <Box p="24px">
             <Flex

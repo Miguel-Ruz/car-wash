@@ -1,12 +1,14 @@
+import { Box, Heading } from '@chakra-ui/react'
 import React from 'react'
 import { DashboardLayout } from '../components'
+import TopBar from '../components/common/TopBar'
 
 type Props = {}
 
 const lavadores = (props: Props) => {
   return (
     <DashboardLayout>
-      <h1>lavadores</h1>
+      <TopBar title='Lavadores'/>
     </DashboardLayout>
   )
 }
