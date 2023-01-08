@@ -17,7 +17,7 @@ function AvatarLogin({ typeUser, name = "", handleCLick, opacityCard }: Props) {
         size="2xl"
         name={name}
         cursor="pointer"
-        onClick={handleCLick(name)}
+        onClick={() => handleCLick(name)}
       />
       <Text color="#718096">{typeUser}</Text>
     </VStack>
