@@ -11,20 +11,23 @@ import {
 import { useState } from "react";
 import { AvatarLogin, LoginCard, NavbarLogin } from "./components";
 
-const index = () => {
+const Auth = () => {
   const [activeButton, setActiveButton] = useState<boolean>(false);
-  const [opacityCard, setOpacityCard] = useState<string>("0.5");
-
+  const [opacityCard, setOpacityCard] = useState<string>("");
 
   const users = [
     { id: 1, tipo: "Admin" },
     { id: 2, tipo: "Regular" },
   ];
 
-  const handleClickUser = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClickUser = (name: string) => {
     setActiveButton(true);
-    setOpacityCard("1")
+    setOpacityCard(name);
   };
+  // const handleClickUser = (e: React.MouseEvent<HTMLDivElement>) => {
+  //   setActiveButton(true);
+  //   // setOpacityCard("1");
+  // };
 
   return (
     <>
@@ -64,4 +67,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Auth;
