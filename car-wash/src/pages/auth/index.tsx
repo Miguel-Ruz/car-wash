@@ -11,7 +11,7 @@ import {
 import { useState } from "react";
 import { AvatarLogin, LoginCard, NavbarLogin } from "./components";
 
-const index = () => {
+const Index = () => {
   const [activeButton, setActiveButton] = useState<boolean>(false);
   const [opacityCard, setOpacityCard] = useState<string>("");
 
@@ -67,4 +67,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
