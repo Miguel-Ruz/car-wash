@@ -5,11 +5,11 @@ type Props = {
   typeUser: string;
   name?: string;
   // handleCLick?: React.MouseEventHandler<HTMLSpanElement>;
-  handleCLick?: (value: string | undefined) => void;
+  handleCLick?: (value: string) => void;
   opacityCard?: string;
 };
 
-function AvatarLogin({ typeUser, name, handleCLick, opacityCard }: Props) {
+function AvatarLogin({ typeUser, name = "", handleCLick, opacityCard }: Props) {
   return (
     <VStack opacity={opacityCard === name ? "1" : "0.3"}>
       <Avatar
