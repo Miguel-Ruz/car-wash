@@ -21,7 +21,6 @@ const index = () => {
   ];
 
   const handleClickUser = (name: string) => {
-    console.log("🚀 ~ file: index.tsx:24 ~ handleClickUser ~ name", name);
     setActiveButton(true);
     setOpacityCard(name);
   };
