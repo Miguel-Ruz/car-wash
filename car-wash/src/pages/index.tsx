@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div>
       <DashboardLayout>
-        <div>
+        <>
           <TopBar title="Dashboard" />
 
           <Box p="24px">
@@ -57,7 +57,7 @@ export default function Home() {
             />
           </Flex>
           <DataTableDashboard />
-        </div>
+        </>
       </DashboardLayout>
     </div>
   );
