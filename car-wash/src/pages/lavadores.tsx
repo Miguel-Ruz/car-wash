@@ -7,6 +7,7 @@ import TopBar from '../components/common/TopBar'
 type Props = {}
 
 const lavadores = (props: Props) => {
+  const thWidth = "18vw"
   return (
     <DashboardLayout>
       <>
@@ -69,20 +70,20 @@ const lavadores = (props: Props) => {
             <Table size="md">
               <Thead>
                 <Tr bg="primaryColor">
-                  <Th>Nombre</Th>
-                  <Th isNumeric>Documentos</Th>
-                  <Th isNumeric>Lavados del dia</Th>
-                  <Th isNumeric>Ganancia</Th>
+                  <Th w={thWidth} >Nombre</Th>
+                  <Th w={thWidth} textAlign="center" isNumeric>Documentos</Th>
+                  <Th w={thWidth} isNumeric>Lavados del dia</Th>
+                  <Th w={thWidth} isNumeric>Ganancia</Th>
                   <Th />
                 </Tr>
               </Thead>
               <Tbody>
-                <Tr>
-                  <Td>Eibel Tres Palacios</Td>
+                <Tr >
+                  <Td >Eibel Tres Palacios</Td>
                   <Td isNumeric>000555999</Td>
-                  <Td isNumeric>3</Td>
+                  <Td  isNumeric>3</Td>
                   <Td isNumeric>$25.000</Td>
-                  <Td isNumeric>
+                  <Td >
                     <Tooltip
                       hasArrow
                       label="Cerrar día"
