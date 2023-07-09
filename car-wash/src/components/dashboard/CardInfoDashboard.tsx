@@ -1,14 +1,21 @@
 import { Box, Flex, HStack, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { ReactNode } from "react";
 
 type Props = {
   bgColor: string;
   bgIconColor: string;
   title: string;
   amount: number;
+  iconCard?: ReactNode;
 };
 
-const CardInfoDashboard = ({ bgColor, bgIconColor, title, amount }: Props) => {
+const CardInfoDashboard = ({
+  bgColor,
+  bgIconColor,
+  title,
+  amount,
+  iconCard,
+}: Props) => {
   return (
     <Flex
       direction="column"
@@ -27,7 +34,7 @@ const CardInfoDashboard = ({ bgColor, bgIconColor, title, amount }: Props) => {
           p="10px"
           textAlign="center"
         >
-          i
+          {iconCard}
         </Box>
         <Text>{title}</Text>
       </HStack>
