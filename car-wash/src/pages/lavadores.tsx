@@ -3,6 +3,7 @@ import React from 'react'
 import { FiCalendar, FiPlus, FiSearch } from 'react-icons/fi'
 import { DashboardLayout } from '../components'
 import TopBar from '../components/common/TopBar'
+import  ButtonRegister  from "../components/common/ButtonRegister";
 
 type Props = {}
 
@@ -46,19 +47,7 @@ const lavadores = (props: Props) => {
             />
           </HStack>
           <Box>
-            <Button
-              w="208px"
-              h="32px"
-              leftIcon={<FiPlus />}
-              bg="buttonColor"
-              color="mainColor"
-              fontSize="14px"
-              p="18px 12px"
-              fontWeight="semibold"
-              _hover={{ bg: "#258685" }}
-            >
-              Registrar nuevo lavador
-            </Button>
+            <ButtonRegister />
           </Box>
         </HStack>
 

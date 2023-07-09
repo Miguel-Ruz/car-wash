@@ -2,7 +2,8 @@ import React from "react";
 import { DashboardLayout } from "../components";
 import TopBar from "../components/common/TopBar";
 import CardsInfoDashboardContainer from "../components/dashboard/CardsInfoDashboardContainer";
-import { Flex, Input, Select, Text } from "@chakra-ui/react";
+import { Box, Flex, Input, Select, Text } from "@chakra-ui/react";
+import ButtonRegister from "../components/common/ButtonRegister";
 
 type Props = {};
 
@@ -11,7 +12,7 @@ const lavados = (props: Props) => {
     <DashboardLayout>
       <TopBar title="Lavados" />
       <CardsInfoDashboardContainer />
-      <Flex p="0 24px">
+      <Flex p="32px 24px" justifyContent="space-between">
         <Flex gap="1rem" alignItems="center">
           <Text>Buscar</Text>
           <Input placeholder="Placas" size="md" w="200px" />
@@ -27,6 +28,9 @@ const lavados = (props: Props) => {
             <option value="option3">Option 3</option>
           </Select>
         </Flex>
+        <Box>
+          <ButtonRegister />
+        </Box>
       </Flex>
     </DashboardLayout>
   );
