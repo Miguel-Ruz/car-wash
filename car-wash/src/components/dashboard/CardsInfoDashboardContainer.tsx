@@ -1,6 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import React from "react";
 import CardInfoDashboard from "./CardInfoDashboard";
+
 interface CardData {
   bgColor: string;
   bgIconColor: string;
@@ -35,15 +36,25 @@ function CardsInfoDashboardContainer({
 }) {
   return (
     <Flex p="0 24px" columnGap="1.25rem" m="2rem 0">
-      {dataCards?.map((cardInfo, index) => (
-        <CardInfoDashboard
-          key={index}
-          bgColor={cardInfo.bgColor}
-          bgIconColor={cardInfo.bgIconColor}
-          title={cardInfo.title}
-          amount={cardInfo.amount}
-        />
-      ))}
+      <CardInfoDashboard
+              bgColor="#F0FFF4"
+              bgIconColor="#C6F6D5"
+              title="Lavados del día"
+              amount={25}
+            />
+            
+            <CardInfoDashboard
+              bgColor="#EBF8FF"
+              bgIconColor="#BEE3F8"
+              title="Lavados del día"
+              amount={1000000}
+            />
+            <CardInfoDashboard
+              bgColor="#FAF5FF"
+              bgIconColor="#E9D8FD"
+              title="Lavados del día"
+              amount={10000000}
+            />
     </Flex>
   );
 }
