@@ -2,6 +2,8 @@ import { Flex } from "@chakra-ui/react";
 import React from "react";
 import CardInfoDashboard from "./CardInfoDashboard";
 import { MdCalendarViewDay } from "react-icons/md";
+import { MdCalendarViewWeek } from "react-icons/md";
+import { MdCalendarViewMonth } from "react-icons/md";
 
 interface CardData {
   bgColor: string;
@@ -48,14 +50,16 @@ function CardsInfoDashboardContainer({
       <CardInfoDashboard
         bgColor="#EBF8FF"
         bgIconColor="#BEE3F8"
-        title="Lavados del día"
+        title="Producido semanal"
         amount={1000000}
+        iconCard={<MdCalendarViewWeek />}
       />
       <CardInfoDashboard
         bgColor="#FAF5FF"
         bgIconColor="#E9D8FD"
-        title="Lavados del día"
+        title="Producido mensual"
         amount={10000000}
+        iconCard={<MdCalendarViewMonth />}
       />
     </Flex>
   );
