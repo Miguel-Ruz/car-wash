@@ -2,7 +2,7 @@ import { Box, Heading, Flex, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import { DashboardLayout } from "../components";
 import logo from "../../public/logoDash.png";
-import { CardInfoDashboard, DataTableDashboard } from "../components/dashboard";
+import { DataTableDashboard } from "../components/dashboard";
 import TopBar from "../components/common/TopBar";
 import CardsInfoDashboardContainer from "../components/dashboard/CardsInfoDashboardContainer";
 
@@ -16,19 +16,13 @@ const data = [
   {
     bgColor: "#EBF8FF",
     bgIconColor: "#BEE3F8",
-    title: "Lavados del día",
+    title: "Producido semanal",
     amount: 25,
   },
   {
     bgColor: "#FAF5FF",
     bgIconColor: "#E9D8FD",
-    title: "Lavados del día",
-    amount: 25,
-  },
-  {
-    bgColor: "#FAF5FF",
-    bgIconColor: "#E9D8FD",
-    title: "Gerson",
+    title: "Producido mensual",
     amount: 25,
   },
 ];

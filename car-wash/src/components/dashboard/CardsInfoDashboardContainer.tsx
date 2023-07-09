@@ -18,13 +18,13 @@ const dataMock: CardData[] = [
   {
     bgColor: "#EBF8FF",
     bgIconColor: "#BEE3F8",
-    title: "Lavados del día",
+    title: "Producido semanal",
     amount: 25,
   },
   {
     bgColor: "#FAF5FF",
     bgIconColor: "#E9D8FD",
-    title: "Lavados del día",
+    title: "Producido mensual",
     amount: 25,
   },
 ];
