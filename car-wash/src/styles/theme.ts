@@ -7,6 +7,7 @@ const theme = extendTheme({
     secondaryColor: "#EDE8F0",
     buttonColor: "#319795",
     fontColor: "#2D3748",
+    fontColorTwo: "rgba(0, 0, 0, 0.36)",
     fontNavColor: "#4A5568",
     hoverSideBard: "#E6FFFA",
     hoverTextColor: "#285E61",
