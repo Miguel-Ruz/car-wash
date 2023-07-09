@@ -1,14 +1,17 @@
-import React from 'react'
-import { DashboardLayout } from '../components'
+import React from "react";
+import { DashboardLayout } from "../components";
+import TopBar from "../components/common/TopBar";
+import CardsInfoDashboardContainer from "../components/dashboard/CardsInfoDashboardContainer";
 
-type Props = {}
+type Props = {};
 
 const lavados = (props: Props) => {
   return (
     <DashboardLayout>
-      <h1>lavados</h1>
+      <TopBar title="Lavados" />
+      <CardsInfoDashboardContainer />
     </DashboardLayout>
-  )
-}
+  );
+};
 
-export default lavados
+export default lavados;
