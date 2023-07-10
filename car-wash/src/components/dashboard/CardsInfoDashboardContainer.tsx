@@ -44,7 +44,11 @@ function CardsInfoDashboardContainer({
         bgIconColor="#C6F6D5"
         title="Lavados del día"
         amount={25}
-        iconCard={<MdCalendarViewDay />}
+        iconCard={
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+            <MdCalendarViewDay style={{ fontSize: '59px' }}/>
+          </div>
+        }
       />
 
       <CardInfoDashboard
@@ -52,14 +56,22 @@ function CardsInfoDashboardContainer({
         bgIconColor="#BEE3F8"
         title="Producido semanal"
         amount={1000000}
-        iconCard={<MdCalendarViewWeek />}
+        iconCard={
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+            <MdCalendarViewWeek style={{ fontSize: '59px' }}/>
+          </div>
+        }
       />
       <CardInfoDashboard
         bgColor="#FAF5FF"
         bgIconColor="#E9D8FD"
         title="Producido mensual"
         amount={10000000}
-        iconCard={<MdCalendarViewMonth />}
+        iconCard={
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+            <MdCalendarViewMonth style={{ fontSize: '59px' }}/>
+          </div>
+        }
       />
     </Flex>
   );
