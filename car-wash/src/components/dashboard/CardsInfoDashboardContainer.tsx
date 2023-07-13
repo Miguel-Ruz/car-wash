@@ -69,7 +69,7 @@ function CardsInfoDashboardContainer({
         amount={10000000}
         iconCard={
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-            <MdCalendarViewMonth style={{ fontSize: '59px' }}/>
+            <MdCalendarViewMonth style={{ fontSize: '58px' }}/>
           </div>
         }
       />
