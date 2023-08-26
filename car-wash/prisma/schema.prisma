@@ -7,36 +7,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model modulos {
-  id             BigInt           @id(map: "permisos _pkey") @default(autoincrement())
-  modulo         String           @db.VarChar(100)
-  roles_permisos roles_permisos[]
+model User {
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username String
+  password String  @db.VarChar(50)
+  createdAt DateTime @default(now())
 }
 
-model roles {
-  id             Int              @id(map: "ROLES_pkey") @default(autoincrement())
-  rol            String           @db.VarChar(50)
-  roles_permisos roles_permisos[]
-  users          users[]
+model Washer {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String
+  documentId String
+  createdAt DateTime @default(now())
+  status Boolean @default(true)
+  washes WasherOnWash[]
 }
 
-model roles_permisos {
-  id        BigInt  @id @default(autoincrement())
-  rol_id    Int     @default(autoincrement())
-  modulo_id BigInt  @default(autoincrement())
-  modulos   modulos @relation(fields: [modulo_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  roles     roles   @relation(fields: [rol_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([modulo_id], map: "fki_permiso_id")
-  @@index([rol_id], map: "fki_rol_id_module")
+model Wash {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid 
+  clientName String
+  vehicleType String
+  licensePlate String
+  washType String
+  paymentType String
+  washers WasherOnWash[]
+  status WashStatus
+  createdAt DateTime @default(now())
 }
 
-model users {
-  id       BigInt  @id @default(autoincrement())
-  password String? @db.VarChar(50)
-  rol_id   Int     @default(autoincrement())
-  roles    roles   @relation(fields: [rol_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model WasherOnWash {
+  washerId String @db.Uuid
+  washer Washer @relation(fields: [washerId], references: [id])
+  washId String @db.Uuid
+  wash Wash @relation(fields: [washId], references: [id])
 
-  @@index([rol_id], map: "fki_rol_fkey")
-  @@index([rol_id], map: "fki_rol_id")
+  @@id([washerId, washId])
+}
+
+enum WashStatus {
+  WAITING
+  IN_PROGRESS
+  COMPLETED
 }
