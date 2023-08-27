@@ -29,6 +29,7 @@ model Wash {
   vehicleType String
   licensePlate String
   washType String
+  rate String
   paymentType String
   washers WasherOnWash[]
   status WashStatus
