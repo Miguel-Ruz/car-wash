@@ -16,7 +16,7 @@ const washSchema = z.object({
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Wash | GeneralError>
+  res: NextApiResponse<Wash | Wash[] | GeneralError>
 ) {
   switch (req.method) {
     case 'POST':
@@ -26,6 +26,13 @@ export default async function handler(
       } catch (error) {
         console.log(error)
         return res.json({ message: 'error creating the wash', error });
+      }
+    case 'GET':
+      try {
+        const result = await getWashList();
+        return res.status(200).json(result);
+      } catch (error) {
+        return res.json({ message: 'error getting the wash list', error });
       }
     default:
       return res.status(404).json({ message: 'Invalid method' })
@@ -44,13 +51,31 @@ async function createWash(req: NextApiRequest): Promise<Wash> {
       washType: request.washType,
       rate: request.rate,
       paymentType: request.paymentType,
-    }
-  });
-  await prisma.washerOnWash.create({
-    data: {
-      washId: washObj.id,
-      washerId: request.washerId
+      washers: {
+        create: [
+          {
+            washerId: request.washerId
+          }
+        ]
+      }
     }
   });
   return washObj;
+}
+
+async function getWashList() {
+  const list = await prisma.wash.findMany({
+    include: {
+      washers: {
+        select: {
+          washer: {
+            select: {
+              name: true
+            }
+          }
+        }
+      }
+    }
+  })
+  return list;
 }
