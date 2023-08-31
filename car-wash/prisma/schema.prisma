@@ -20,7 +20,7 @@ model Washer {
   documentId String
   createdAt DateTime @default(now())
   status Boolean @default(true)
-  washes WasherOnWash[]
+  washes Wash[]
 }
 
 model Wash {
@@ -31,18 +31,10 @@ model Wash {
   washType String
   rate String
   paymentType String
-  washers WasherOnWash[]
   status WashStatus @default(WAITING)
   createdAt DateTime @default(now())
-}
-
-model WasherOnWash {
-  washerId String @db.Uuid
   washer Washer @relation(fields: [washerId], references: [id])
-  washId String @db.Uuid
-  wash Wash @relation(fields: [washId], references: [id])
-
-  @@id([washerId, washId])
+  washerId String @db.Uuid
 }
 
 enum WashStatus {

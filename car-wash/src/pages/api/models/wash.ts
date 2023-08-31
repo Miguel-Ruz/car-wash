@@ -7,4 +7,7 @@ export interface Wash {
   paymentType: string
   status: string;
   createdAt: Date;
+  washer?: {
+    name: string;
+  }
 }

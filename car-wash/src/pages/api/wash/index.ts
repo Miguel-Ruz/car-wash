@@ -3,6 +3,7 @@ import { prisma } from '../../../libs/prisma';
 import { Wash } from "../models/wash";
 import { GeneralError } from "../models/general-error";
 import { z } from "zod";
+import { PaginatedResponse } from "../models/paginated-response";
 
 const washSchema = z.object({
   clientName: z.string().min(1, 'clientName es requerido'),
@@ -16,7 +17,7 @@ const washSchema = z.object({
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Wash | Wash[] | GeneralError>
+  res: NextApiResponse<Wash | PaginatedResponse<Wash> | GeneralError>
 ) {
   switch (req.method) {
     case 'POST':
@@ -24,12 +25,11 @@ export default async function handler(
         const result = await createWash(req);
         return res.status(200).json(result);
       } catch (error) {
-        console.log(error)
         return res.json({ message: 'error creating the wash', error });
       }
     case 'GET':
       try {
-        const result = await getWashList();
+        const result = await getWashList(req);
         return res.status(200).json(result);
       } catch (error) {
         return res.json({ message: 'error getting the wash list', error });
@@ -51,28 +51,23 @@ async function createWash(req: NextApiRequest): Promise<Wash> {
       washType: request.washType,
       rate: request.rate,
       paymentType: request.paymentType,
-      washers: {
-        create: [
-          {
-            washerId: request.washerId
-          }
-        ]
-      }
+      washerId: request.washerId
     }
   });
   return washObj;
 }
 
-async function getWashList() {
+async function getWashList(req: NextApiRequest): Promise<PaginatedResponse<Wash>> {
+  const queryParams = req.query;
+  const page = Number(queryParams.page) || 1;
+  const size = Number(queryParams.size) || 10;
   const list = await prisma.wash.findMany({
+    skip: (page - 1) * size,
+    take: size,
     include: {
-      washers: {
+      washer: {
         select: {
-          washer: {
-            select: {
-              name: true
-            }
-          }
+          name: true
         }
       }
     },
@@ -80,5 +75,10 @@ async function getWashList() {
       createdAt: 'desc'
     }
   })
-  return list;
+  return {
+    page: page,
+    size: size,
+    total: await prisma.wash.count(),
+    data: list
+  }
 }
