@@ -75,6 +75,9 @@ async function getWashList() {
           }
         }
       }
+    },
+    orderBy: {
+      createdAt: 'desc'
     }
   })
   return list;
