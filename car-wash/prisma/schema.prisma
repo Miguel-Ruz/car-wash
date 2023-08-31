@@ -32,7 +32,7 @@ model Wash {
   rate String
   paymentType String
   washers WasherOnWash[]
-  status WashStatus
+  status WashStatus @default(WAITING)
   createdAt DateTime @default(now())
 }
 
