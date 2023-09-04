@@ -3,6 +3,7 @@ import { GeneralError } from '../models/general-error';
 import { WashCount } from '../models/wash-count';
 import moment from 'moment';
 import { prisma } from '../../../libs/prisma';
+import { getFormatedActualDate, getMonthlyDate, getWeeklyDate } from '../../../libs/util';
 
 
 export default async function handler(
@@ -24,7 +25,7 @@ export default async function handler(
 
 
 async function getWashCounters(): Promise<WashCount> {
-  const actualDate = getFormatedDate();
+  const actualDate = getFormatedActualDate();
   const weeklyDate = getWeeklyDate();
   const monthlyDate = getMonthlyDate();
 
@@ -80,22 +81,3 @@ function getTotalRate(list: { rate: string }[]): string {
 }
 
 
-function getFormatedDate(): string {
-  const date = new Date();
-  const month = date.getMonth() + 1;
-  return `${date.getFullYear()}-${String(month).padStart(2, '0')}-${date.getDate()}`;
-}
-
-function getWeeklyDate() {
-  const weeklyDate = moment();
-  weeklyDate.subtract(7, 'days');
-  const month = weeklyDate.month() + 1;
-  return `${weeklyDate.year()}-${String(month).padStart(2, '0')}-${weeklyDate.date()}`;
-}
-
-function getMonthlyDate() {
-  const monthlyDate = moment();
-  monthlyDate.subtract(1, 'month');
-  const month = monthlyDate.month() + 1;
-  return `${monthlyDate.year()}-${String(month).padStart(2, '0')}-${monthlyDate.date()}`;
-}
