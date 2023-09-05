@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Wash } from '../models/wash';
 import { GeneralError } from '../models/general-error';
 import { prisma } from '../../../libs/prisma';
 import { getFormatedActualDate, getMonthlyDate, getWeeklyDate } from '../../../libs/util';
@@ -16,7 +15,7 @@ export default async function handler(
         const result = await getReport(req);
         return res.status(200).json(result);
       } catch (err) {
-        return res.json({ message: 'error getting the list' });
+        return res.status(400).json({ message: 'error getting the list' });
       }
     default:
       return res.status(404).json({ message: 'Invalid method' })
@@ -36,8 +35,8 @@ async function getReport(req: NextApiRequest): Promise<WashReport> {
     case 'weekly':
       const weeklyDate = getWeeklyDate();
       filters = {
-        lte: new Date(`${weeklyDate.start} 23:59:59`),
-        gte: new Date(`${weeklyDate.end} 00:00:00`)
+        lte: new Date(`${weeklyDate.end} 23:59:59`),
+        gte: new Date(`${weeklyDate.start} 00:00:00`)
       };
       break;
     case 'monthly':
@@ -61,7 +60,8 @@ async function getReport(req: NextApiRequest): Promise<WashReport> {
       clientName: true,
       vehicleType: true,
       washType: true,
-      rate: true
+      rate: true,
+      createdAt: true
     }
   });
   const total = list

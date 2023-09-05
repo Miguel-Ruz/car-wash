@@ -16,7 +16,7 @@ export default async function handler(
         const result = await getWashCounters();
         return res.status(200).json(result);
       } catch (err) {
-        return res.json({ message: 'error calculating the counters' });
+        return res.status(400).json({ message: 'error calculating the counters', error: err });
       }
     default:
       return res.status(404).json({ message: 'Invalid method' })
@@ -41,8 +41,8 @@ async function getWashCounters(): Promise<WashCount> {
   const weeklyPromise = prisma.wash.findMany({
     where: {
       createdAt: {
-        lte: new Date(`${actualDate} 23:59:59`),
-        gte: new Date(`${weeklyDate} 00:00:00`)
+        lte: new Date(`${weeklyDate.end} 23:59:59`),
+        gte: new Date(`${weeklyDate.start} 00:00:00`)
       }
     },
     select: {
@@ -50,11 +50,12 @@ async function getWashCounters(): Promise<WashCount> {
     }
   });
 
+  console.log(weeklyDate)
   const monthlyPromise = prisma.wash.findMany({
     where: {
       createdAt: {
-        lte: new Date(`${actualDate} 23:59:59`),
-        gte: new Date(`${monthlyDate} 00:00:00`)
+        lte: new Date(`${monthlyDate.end} 23:59:59`),
+        gte: new Date(`${monthlyDate.start} 00:00:00`)
       }
     },
     select: {

@@ -26,7 +26,7 @@ export default async function handler(
         return res.status(200).json(result);
       } catch (error) {
         console.log(error)
-        return res.json({ message: 'error creating the wash', error });
+        return res.status(400).json({ message: 'error creating the wash', error });
       }
     case 'GET':
       try {
@@ -34,7 +34,7 @@ export default async function handler(
         return res.status(200).json(result);
       } catch (error) {
         console.log(error)
-        return res.json({ message: 'error getting the wash list', error });
+        return res.status(400).json({ message: 'error getting the wash list', error });
       }
     default:
       return res.status(404).json({ message: 'Invalid method' })

@@ -14,8 +14,7 @@ export default async function handler(
         const result = await getWasherList(req);
         return res.status(200).json(result);
       } catch (err) {
-        console.log(err)
-        return res.json({ message: 'error getting the list' });
+        return res.json({ message: 'error getting the list', error: err });
       }
     default:
       return res.status(404).json({ message: 'Invalid method' })

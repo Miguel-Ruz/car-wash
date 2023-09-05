@@ -16,9 +16,11 @@ export function getFormatedActualDate(): string {
  */
 export function getWeeklyDate() {
   const weeklyDate = moment();
+
+
   return {
-    start: weeklyDate.format('YYYY-MM-DD'),
-    end: weeklyDate.clone().subtract(7, 'days').format('YYYY-MM-DD')
+    start: weeklyDate.startOf('week').format('YYYY-MM-DD'),
+    end: weeklyDate.clone().endOf('week').format('YYYY-MM-DD')
   }
 }
 
