@@ -1,0 +1,478 @@
+{
+  "definition": {
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Car Wash api",
+      "version": "1.0"
+    },
+    "components": {
+      "schemas": {
+        "PaginatedWashList": {
+          "type": "object",
+          "properties": {
+            "page": {
+              "type": "number"
+            },
+            "size": {
+              "type": "number"
+            },
+            "total": {
+              "type": "number"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Wash"
+              }
+            }
+          }
+        },
+        "Wash": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "clientName": {
+              "type": "string"
+            },
+            "vehicleType": {
+              "type": "string"
+            },
+            "licensePlate": {
+              "type": "string"
+            },
+            "washType": {
+              "type": "string"
+            },
+            "rate": {
+              "type": "string"
+            },
+            "paymentType": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string"
+            },
+            "washerId": {
+              "type": "string"
+            },
+            "washer": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Washer": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "documentId": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string"
+            },
+            "status": {
+              "type": "boolean"
+            },
+            "washes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "rate": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Report": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "clientName": {
+                    "type": "string"
+                  },
+                  "vehicleType": {
+                    "type": "string"
+                  },
+                  "washType": {
+                    "type": "string"
+                  },
+                  "rate": {
+                    "type": "string"
+                  },
+                  "createdAt": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "totalRate": {
+              "type": "number"
+            }
+          }
+        },
+        "MonthlyReport": {
+          "type": "object",
+          "properties": {
+            "week": {
+              "type": "string"
+            },
+            "washerCount": {
+              "type": "string"
+            },
+            "total": {
+              "type": "number"
+            }
+          }
+        },
+        "GeneralError": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "description": "Error message"
+            },
+            "error": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "paths": {
+      "/api/wash": {
+        "get": {
+          "summary": "Returns a list of washes",
+          "description": "Gets the paginated list of all washes",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "page",
+              "description": "Sets the page of the list to get paginated data",
+              "schema": {
+                "type": "number"
+              }
+            },
+            {
+              "in": "query",
+              "name": "size",
+              "description": "Sets the size of the list to get paginated data",
+              "schema": {
+                "type": "number"
+              }
+            },
+            {
+              "in": "query",
+              "name": "washType",
+              "description": "Sets the washType to filter to",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "licensePlate",
+              "description": "Sets license plate to filter to",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "A JSON array of washes",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PaginatedWashList"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Creates a wash record",
+          "description": "Creates a new record of a wash",
+          "requestBody": {
+            "description": "Request object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "washerId": {
+                      "type": "string"
+                    },
+                    "clientName": {
+                      "type": "string"
+                    },
+                    "vehicleType": {
+                      "type": "string"
+                    },
+                    "licensePlate": {
+                      "type": "string"
+                    },
+                    "washType": {
+                      "type": "string"
+                    },
+                    "rate": {
+                      "type": "string"
+                    },
+                    "paymentType": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Returns the new created object",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Wash"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GeneralError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/wash/count": {
+        "get": {
+          "summary": "Returns de dashboard counters",
+          "description": "Returns the respective counters for the dashboard",
+          "responses": {
+            "200": {
+              "description": "A JSON object of the counters",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "dailyCount": {
+                        "type": "number"
+                      },
+                      "totalEarningsWeekly": {
+                        "type": "string"
+                      },
+                      "totalEarningsMonth": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GeneralError"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/washer": {
+        "get": {
+          "summary": "Returns the list of washers with the sum of the daily rate count",
+          "responses": {
+            "200": {
+              "description": "A JSON list of the washers",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Washer"
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GeneralError"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/reports": {
+        "get": {
+          "summary": "Returns a list of washes with the total rates",
+          "description": "Returns a list of washes with the sum of total rates daily/weekly or monthly",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "format",
+              "description": "Sets the type of report to get",
+              "schema": {
+                "type": "string",
+                "enum": [
+                  "daily",
+                  "weekly",
+                  "monthly"
+                ]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "A JSON list of reports",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Report"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GeneralError"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/reports/monthly": {
+        "get": {
+          "summary": "Returns a list of washes of the current month",
+          "description": "Returns a list of washes with the sum of total rates monthly",
+          "responses": {
+            "200": {
+              "description": "A JSON list of reports",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MonthlyReport"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GeneralError"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

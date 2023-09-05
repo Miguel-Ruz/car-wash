@@ -25,14 +25,16 @@ export default async function handler(
         const result = await createWash(req);
         return res.status(200).json(result);
       } catch (error) {
-        return res.json({ message: 'error creating the wash', error });
+        console.log(error)
+        return res.status(400).json({ message: 'error creating the wash', error });
       }
     case 'GET':
       try {
         const result = await getWashList(req);
         return res.status(200).json(result);
       } catch (error) {
-        return res.json({ message: 'error getting the wash list', error });
+        console.log(error)
+        return res.status(400).json({ message: 'error getting the wash list', error });
       }
     default:
       return res.status(404).json({ message: 'Invalid method' })
@@ -71,6 +73,7 @@ async function getWashList(req: NextApiRequest): Promise<PaginatedResponse<Wash>
         }
       }
     },
+    where: filterWashList(req),
     orderBy: {
       createdAt: 'desc'
     }
@@ -78,7 +81,20 @@ async function getWashList(req: NextApiRequest): Promise<PaginatedResponse<Wash>
   return {
     page: page,
     size: size,
-    total: await prisma.wash.count(),
+    total: await prisma.wash.count({ where: filterWashList(req) }),
     data: list
   }
+}
+
+function filterWashList(req: NextApiRequest) {
+  const filters: any = {};
+  if (req.query.washType) {
+    filters['washType'] = String(req.query.washType);
+  }
+  if (req.query.licensePlate) {
+    filters['licensePlate'] = {
+      contains: String(req.query.licensePlate)
+    }
+  }
+  return filters;
 }
