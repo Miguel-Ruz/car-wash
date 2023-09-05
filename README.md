@@ -2,8 +2,10 @@
 
 ## .env variables
 
+create an .env file on the root of the project with the following variables.
+
 ```
-DATABASE_URL=postgres://carwash_pv7h_user:tdMjtmfH5IZRy09896g35PMBg4DqwazN@dpg-cjjbs50cfp5c73fm1feg-a.oregon-postgres.render.com/carwash_pv7h
+DATABASE_URL=databaseurl
 NEXTAUTH_SECRET=authsecret
 ENVIRONMENT=development
 ```
