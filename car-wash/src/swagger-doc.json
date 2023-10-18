@@ -370,6 +370,51 @@
               }
             }
           }
+        },
+        "post": {
+          "summary": "Creates a washer record",
+          "description": "Creates a new washer",
+          "requestBody": {
+            "description": "Request object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "documentId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Returns the new created object",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Washer"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GeneralError"
+                  }
+                }
+              }
+            }
+          }
         }
       },
       "/api/reports": {

@@ -3,10 +3,16 @@ import { GeneralError } from "../models/general-error";
 import { prisma } from '../../../libs/prisma';
 import { getFormatedActualDate } from "../../../libs/util";
 import { Washer } from "@prisma/client";
+import { z } from "zod";
+
+const washerSchema = z.object({
+  name: z.string().min(1, 'name es requerido'),
+  documentId: z.string().min(1, 'document ID es requerido'),
+});
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Washer[] | GeneralError>
+  res: NextApiResponse<Washer | Washer[] | GeneralError>
 ) {
   switch (req.method) {
     case 'GET':
@@ -15,6 +21,13 @@ export default async function handler(
         return res.status(200).json(result);
       } catch (err) {
         return res.json({ message: 'error getting the list', error: err });
+      }
+    case 'POST':
+      try {
+        const result = await createWasher(req);
+        return res.status(201).json(result);
+      } catch (error) {
+        return res.json({ message: 'error creating a washer', error });
       }
     default:
       return res.status(404).json({ message: 'Invalid method' })
@@ -40,6 +53,17 @@ async function getWasherList(req: NextApiRequest): Promise<Washer[]> {
     where: filterWasherList(req)
   })
   return list;
+}
+
+async function createWasher(req: NextApiRequest): Promise<Washer> {
+  const request = washerSchema.parse(req.body);
+  const washerObj = await prisma.washer.create({
+    data: {
+      name: request.name,
+      documentId: request.documentId
+    }
+  });
+  return washerObj;
 }
 
 function filterWasherList(req: NextApiRequest): any {
