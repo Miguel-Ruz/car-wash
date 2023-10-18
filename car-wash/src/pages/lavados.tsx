@@ -1,17 +1,21 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React from "react";
 import { DashboardLayout } from "../components";
 import TopBar from "../components/common/TopBar";
 import CardsInfoDashboardContainer from "../components/dashboard/CardsInfoDashboardContainer";
 import { Box, Flex, Input, Select, Text } from "@chakra-ui/react";
 import ButtonRegister from "../components/common/ButtonRegister";
+import useFetchData from "../hooks/useFetchData";
 
 type Props = {};
 
 const lavados = (props: Props) => {
+  const url = "http://localhost:3000/api/wash/count";
+  const { data } = useFetchData(url);
   return (
     <DashboardLayout>
       <TopBar title="Lavados" />
-      <CardsInfoDashboardContainer />
+      <CardsInfoDashboardContainer dashboardCounter={data} />
       <Flex p="32px 24px" justifyContent="space-between">
         <Flex gap="1rem" alignItems="center">
           <Text>Buscar</Text>

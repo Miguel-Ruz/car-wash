@@ -5,6 +5,10 @@ import logo from "../../public/logoDash.png";
 import { DataTableDashboard } from "../components/dashboard";
 import TopBar from "../components/common/TopBar";
 import CardsInfoDashboardContainer from "../components/dashboard/CardsInfoDashboardContainer";
+import { useEffect, useState } from "react";
+
+//hooks
+import useFetchData from "../hooks/useFetchData";
 
 const data = [
   {
@@ -28,6 +32,9 @@ const data = [
 ];
 
 export default function Home() {
+  const url = "http://localhost:3000/api/wash/count";
+  const { data } = useFetchData(url);
+
   return (
     <div>
       <DashboardLayout>
@@ -62,7 +69,7 @@ export default function Home() {
             </Flex>
           </Box>
 
-          <CardsInfoDashboardContainer dataCards={data} />
+          <CardsInfoDashboardContainer dashboardCounter={data} />
           <DataTableDashboard />
         </>
       </DashboardLayout>

@@ -1,8 +1,11 @@
-import React from "react"
-import { Box, Button } from "@chakra-ui/react"
-import { FiPlus } from "react-icons/fi"
+import React from "react";
+import { Box, Button, useDisclosure } from "@chakra-ui/react";
+import { FiPlus } from "react-icons/fi";
+import ModalAddWasher from "./ModalAddWasher";
 
 const ButtonRegister = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <Box>
       <Button
@@ -15,11 +18,13 @@ const ButtonRegister = () => {
         p="18px 12px"
         fontWeight="semibold"
         _hover={{ bg: "#258685" }}
+        onClick={onOpen}
       >
         Registrar nuevo lavador
       </Button>
+      <ModalAddWasher isOpen={isOpen} onClose={onClose} />
     </Box>
-  )
-}
+  );
+};
 
-export default ButtonRegister
+export default ButtonRegister;
