@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import {
   Button,
@@ -12,6 +13,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
+import postWasher from "../../services/postWashers";
 
 type Props = {
   isOpen: boolean;
@@ -33,10 +35,34 @@ const ModalAddWasher = ({ isOpen, onClose }: Props) => {
     }
   };
 
-  const handleModalClose = () => {
+  var handleModalClose = () => {
     setName(""); // Restablece el valor de name a una cadena vacía
     setDocumento(""); // Restablece el valor de documento a una cadena vacía
     onClose(); // Cierra el modal
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Valida que los campos "name" y "documento" tengan valores antes de enviar la solicitud
+    if (name.trim() === "" || documento.trim() === "") {
+      alert("Por favor, completa todos los campos.");
+      return; // Detén el envío de la solicitud si hay campos vacíos
+    }
+
+    const dataToSend = {
+      name,
+      documentId: documento,
+    };
+
+    //fetch
+    const data = postWasher(dataToSend);
+
+    //cerrar modal y recargar la pagina
+    if (data) {
+      handleModalClose();
+      window.location.reload();
+    }
   };
 
   const initialRef = React.useRef(null);
@@ -72,17 +98,12 @@ const ModalAddWasher = ({ isOpen, onClose }: Props) => {
                 value={documento}
                 onChange={(e) => handleDocumentoChange(e)}
                 inputMode="numeric"
-                isInvalid={error}
               />
             </FormControl>
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              colorScheme="teal"
-              mr={3}
-              onClick={() => console.log("click guardar")}
-            >
+            <Button colorScheme="teal" mr={3} onClick={(e) => handleSubmit(e)}>
               Guardar
             </Button>
           </ModalFooter>

@@ -3,7 +3,11 @@ import { Box, Button, useDisclosure } from "@chakra-ui/react";
 import { FiPlus } from "react-icons/fi";
 import ModalAddWasher from "./ModalAddWasher";
 
-const ButtonRegister = () => {
+type Props = {
+  title: string;
+};
+
+const ButtonRegister = ({ title }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -20,7 +24,7 @@ const ButtonRegister = () => {
         _hover={{ bg: "#258685" }}
         onClick={onOpen}
       >
-        Registrar nuevo lavador
+        {title}
       </Button>
       <ModalAddWasher isOpen={isOpen} onClose={onClose} />
     </Box>
