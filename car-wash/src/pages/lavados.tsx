@@ -5,6 +5,7 @@ import TopBar from "../components/common/TopBar";
 import CardsInfoDashboardContainer from "../components/dashboard/CardsInfoDashboardContainer";
 import {
   Avatar,
+  Badge,
   Box,
   Flex,
   Input,
@@ -20,16 +21,26 @@ import {
   Tooltip,
   Tr,
   WrapItem,
+  useDisclosure,
 } from "@chakra-ui/react";
 import ButtonRegister from "../components/common/ButtonRegister";
 import useFetchData from "../hooks/useFetchData";
 import { FiCalendar } from "react-icons/fi";
+import ModalGlobal from "../components/common/ModalGlobal";
+import ModalAddWash from "../components/common/ModalAddWash";
 
 type Props = {};
+type STATUS = {
+  WAITING: string;
+  IN_PROGRESS: string;
+  COMPLETED: string;
+};
 
 const lavados = (props: Props) => {
   const [placasFilter, setPlacasFilter] = useState("");
   // const [tipoLavado, setTipoLavado] = useState("");
+  //open modal
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   //wash count
   const url = "http://localhost:3000/api/wash/count";
@@ -42,12 +53,29 @@ const lavados = (props: Props) => {
   const filteredData = listWashes.data?.data?.filter((item) =>
     item.licensePlate.includes(placasFilter)
   );
-  console.log(
-    "🚀 ~ file: lavados.tsx:38 ~ lavados ~ date:",
-    listWashes.data?.data
-  );
 
   const thWidth = "18vw";
+
+  const badgeStatus: STATUS = {
+    WAITING: "red",
+    IN_PROGRESS: "yellow",
+    COMPLETED: "green",
+  };
+
+  const BadgeStatus = ({ status, item }) => {
+    const statusBadge = badgeStatus[status] || null;
+
+    return (
+      <Badge variant="solid" colorScheme={statusBadge}>
+        {item.status}
+      </Badge>
+    );
+  };
+
+  //modal logic
+  var handleModalClose = () => {
+    onClose(); // Cierra el modal
+  };
 
   return (
     <DashboardLayout>
@@ -77,7 +105,7 @@ const lavados = (props: Props) => {
           </Select>
         </Flex>
         <Box>
-          <ButtonRegister title="Registrar nuevo lavado " />
+          <ButtonRegister onOpen={onOpen} title="Registrar nuevo lavado " />
         </Box>
       </Flex>
       <Box px="24px">
@@ -112,7 +140,9 @@ const lavados = (props: Props) => {
                   <Td>{item.licensePlate}</Td>
                   <Td>{item.washer.name}</Td>
                   <Td>{item.washType}</Td>
-                  <Td>{item.status}</Td>
+                  <Td>
+                    <BadgeStatus status={item.status} item={item} />
+                  </Td>
                   <Td>
                     <Tooltip hasArrow label="Cerrar día" placement="auto">
                       <Stack align="end">
@@ -127,6 +157,9 @@ const lavados = (props: Props) => {
           </Table>
         </TableContainer>
       </Box>
+      <ModalGlobal handleModalClose={handleModalClose} isOpen={isOpen}>
+        <ModalAddWash />
+      </ModalGlobal>
     </DashboardLayout>
   );
 };

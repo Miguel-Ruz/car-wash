@@ -9,12 +9,7 @@ async function postWasher(dataToSend) {
     };
     const res = await fetch("http://localhost:3000/api/washer", requestOptions);
     const data = await res.json();
-    //cerrar modal y recargar la pagina
-    // if (data) {
-    //   handleModalClose();
-    //   window.location.reload();
-    //   console.log("hola", data.data);
-    // }
+
     return data.data;
   } catch (error) {
     return error;

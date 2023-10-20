@@ -1,15 +1,13 @@
 import React from "react";
 import { Box, Button, useDisclosure } from "@chakra-ui/react";
 import { FiPlus } from "react-icons/fi";
-import ModalAddWasher from "./ModalAddWasher";
 
 type Props = {
   title: string;
+  onOpen: () => void;
 };
 
-const ButtonRegister = ({ title }: Props) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
+const ButtonRegister = ({ title, onOpen }: Props) => {
   return (
     <Box>
       <Button
@@ -26,7 +24,6 @@ const ButtonRegister = ({ title }: Props) => {
       >
         {title}
       </Button>
-      <ModalAddWasher isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 };

@@ -14,13 +14,20 @@ import {
   Thead,
   Tooltip,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FiCalendar, FiPlus, FiSearch } from "react-icons/fi";
 import { DashboardLayout } from "../components";
 import TopBar from "../components/common/TopBar";
 import ButtonRegister from "../components/common/ButtonRegister";
+
+//Custom hooks
 import useFetchData from "../hooks/useFetchData";
+
+//utils
+import ModalAddWasherr from "../components/common/ModalAddWasherr";
+import ModalGlobal from "../components/common/ModalGlobal";
 
 type Props = {};
 
@@ -35,6 +42,17 @@ interface Washer {
 const lavadores = (props: Props) => {
   const [nameFilter, setNameFilter] = useState("");
   const [documentFilter, setDocumentFilter] = useState("");
+  const [name, setName] = useState("");
+  const [documento, setDocumento] = useState("");
+  const [error, setError] = useState(false);
+
+  var handleModalClose = () => {
+    setName(""); // Restablece el valor de name a una cadena vacía
+    setDocumento(""); // Restablece el valor de documento a una cadena vacía
+    onClose(); // Cierra el modal
+  };
+  //open modal
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const thWidth = "18vw";
 
@@ -92,7 +110,7 @@ const lavadores = (props: Props) => {
             />
           </HStack>
           <Box>
-            <ButtonRegister title="Registrar nuevo lavador" />
+            <ButtonRegister onOpen={onOpen} title="Registrar nuevo lavador" />
           </Box>
         </HStack>
 
@@ -138,6 +156,17 @@ const lavadores = (props: Props) => {
           </TableContainer>
         </Box>
       </>
+      <ModalGlobal handleModalClose={handleModalClose} isOpen={isOpen}>
+        <ModalAddWasherr
+          initialRef={null}
+          name={name}
+          setName={setName}
+          documento={documento}
+          setDocumento={setDocumento}
+          handleModalClose={handleModalClose}
+          setError={setError}
+        />
+      </ModalGlobal>
     </DashboardLayout>
   );
 };
