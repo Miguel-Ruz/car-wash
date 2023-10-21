@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DashboardLayout } from "../components";
 import TopBar from "../components/common/TopBar";
 import CardsInfoDashboardContainer from "../components/dashboard/CardsInfoDashboardContainer";
@@ -27,7 +27,10 @@ import ButtonRegister from "../components/common/ButtonRegister";
 import useFetchData from "../hooks/useFetchData";
 import { FiCalendar } from "react-icons/fi";
 import ModalGlobal from "../components/common/ModalGlobal";
-import ModalAddWash from "../components/common/ModalAddWash";
+import ModalAddWash from "../components/common/ModalAddWashs.tsx/ModalAddWash";
+import postWash from "../services/postWash";
+import { hasValuesOnObject } from "../utilitis/validators";
+import SuccessData from "../components/common/ModalAddWashs.tsx/SuccessData";
 
 type Props = {};
 type STATUS = {
@@ -35,10 +38,119 @@ type STATUS = {
   IN_PROGRESS: string;
   COMPLETED: string;
 };
+// Define un tipo para los estados de validación de los campos
+type ValidationState = {
+  washerId: boolean;
+  clientName: boolean;
+  vehicleType: boolean;
+  licensePlate: boolean;
+  washType: boolean;
+  rate: boolean;
+  paymentType: boolean;
+};
 
 const lavados = (props: Props) => {
   const [placasFilter, setPlacasFilter] = useState("");
-  // const [tipoLavado, setTipoLavado] = useState("");
+  const [loading, setLoading] = useState(false); // Estado para rastrear la carga de la solicitud
+  const [wash, setWash] = useState({});
+  const [stepperStep, setStepperStep] = useState({
+    clientData: true,
+    washData: false,
+  });
+  const [createWash, setCreateWash] = useState({
+    washerId: "",
+    clientName: "",
+    vehicleType: "",
+    licensePlate: "",
+    washType: "",
+    rate: "",
+    paymentType: "",
+  });
+  // Estado para manejar la validación de campos
+  const [validation, setValidation] = useState<ValidationState>({
+    washerId: false,
+    clientName: false,
+    vehicleType: false,
+    licensePlate: false,
+    washType: false,
+    rate: false,
+    paymentType: false,
+  });
+
+  const isButtonDisabled =
+    !createWash.clientName ||
+    !createWash.vehicleType ||
+    !createWash.licensePlate;
+
+  // Función para validar y formatear la placa
+  const validateLicensePlate = (value: string) => {
+    // Elimina espacios en blanco y convierte a mayúsculas
+    const formattedValue = value.replace(/\s/g, "").toUpperCase();
+
+    if (formattedValue.length === 6) {
+      return formattedValue; // Devuelve la placa tal como está si tiene 6 caracteres o menos
+    }
+    return formattedValue.slice(0, 6); // Recorta a 6 caracteres si tiene más de 6
+  };
+
+  const handleChangeCreateWash = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    // Validación de campos obligatorios
+    const isRequiredField = name !== "rate" && name !== "paymentType";
+    const isFieldValid = isRequiredField ? !!value.trim() : true;
+
+    // Si el campo es 'licensePlate', valida y formatea la placa
+    const formattedLicensePlate =
+      name === "licensePlate" ? validateLicensePlate(value) : value;
+
+    setCreateWash({
+      ...createWash,
+      [name]: formattedLicensePlate,
+    });
+
+    setValidation({
+      ...validation,
+      [name]: isFieldValid,
+    });
+  };
+
+  // Función para verificar si el formulario es válido
+  const isFormValid = () => {
+    return Object.values(validation).every((isValid) => isValid);
+  };
+
+  const handleSubmitCreateWash = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isFormValid()) {
+      // Aquí puedes hacer algo con los datos de createWash, como enviarlos a un servidor o realizar alguna acción.
+      setLoading(true); // Establece el estado de carga a verdadero antes de la petición
+      //fetch
+      try {
+        const response = await postWash(createWash);
+        console.log(
+          "🚀 ~ file: lavados.tsx:133 ~ handleSubmitCreateWash ~ response:",
+          response
+        );
+        // La petición se ha completado exitosamente
+        setWash(response);
+      } catch (error) {
+        // Hubo un error en la petición
+        console.error("Error:", error);
+      } finally {
+        setLoading(false); // Establece el estado de carga a falso después de la petición
+      }
+    } else {
+      alert("Por favor, complete el formulario correctamente.");
+    }
+  };
+  console.log(loading, "loading post");
+  useEffect(() => {
+    console.log(createWash, "holaola");
+  }, [createWash]);
+
   //open modal
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -48,6 +160,9 @@ const lavados = (props: Props) => {
 
   const urlListWashes = "http://localhost:3000/api/wash";
   const listWashes = useFetchData(urlListWashes);
+
+  const urlListWasher = "http://localhost:3000/api/washer";
+  const listWasher = useFetchData(urlListWasher);
 
   //filtrar por placas
   const filteredData = listWashes.data?.data?.filter((item) =>
@@ -76,7 +191,9 @@ const lavados = (props: Props) => {
   var handleModalClose = () => {
     onClose(); // Cierra el modal
   };
-
+  const isData = hasValuesOnObject(wash);
+  console.log(wash, "washPostData1");
+  console.log(isData, "washPostData2");
   return (
     <DashboardLayout>
       <TopBar title="Lavados" />
@@ -158,7 +275,21 @@ const lavados = (props: Props) => {
         </TableContainer>
       </Box>
       <ModalGlobal handleModalClose={handleModalClose} isOpen={isOpen}>
-        <ModalAddWash />
+        {hasValuesOnObject(wash) ? (
+          <SuccessData handleModalClose={handleModalClose} />
+        ) : (
+          <ModalAddWash
+            handleModalClose={handleModalClose}
+            setStepperStep={setStepperStep}
+            stepperStep={stepperStep}
+            handleChangeCreateWash={handleChangeCreateWash}
+            createWash={createWash}
+            listWasher={listWasher}
+            isButtonDisabled={isButtonDisabled}
+            handleSubmitCreateWash={handleSubmitCreateWash}
+            loading={loading}
+          />
+        )}
       </ModalGlobal>
     </DashboardLayout>
   );
