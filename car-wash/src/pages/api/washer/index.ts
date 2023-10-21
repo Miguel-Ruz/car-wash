@@ -27,7 +27,7 @@ export default async function handler(
         const result = await createWasher(req);
         return res.status(201).json(result);
       } catch (error) {
-        return res.json({ message: 'error creating a washer', error });
+        return res.status(400).json({ message: 'error creating a washer', error });
       }
     default:
       return res.status(404).json({ message: 'Invalid method' })
