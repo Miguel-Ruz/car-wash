@@ -3,17 +3,20 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getFormatedActualDate } from "../../../libs/util";
 import { prisma } from '../../../libs/prisma';
 import { GeneralError } from "../models/general-error";
-import { MonthlyReport } from "../models/wash-report";
+import { MonthlyReport, MonthlyReportResponse } from "../models/wash-report";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<MonthlyReport[] | GeneralError>
+  res: NextApiResponse<MonthlyReportResponse | GeneralError>
 ) {
   switch (req.method) {
     case 'GET':
       try {
         const result = await getReport();
-        return res.status(200).json(result);
+        return res.status(200).json({
+          data: result,
+          totalBalance: totalBalance(result)
+        });
       } catch (err) {
         console.log(err)
         return res.status(400).json({ message: 'error getting the list', error: err });
@@ -86,4 +89,12 @@ function calculateWeeks() {
     currentWeek.add(1, 'week');
   }
   return weeks;
+}
+
+function totalBalance(list: any[]) {
+  return list
+    .map(item => item.total)
+    .reduce((prev, next) => {
+      return Number(prev) + Number(next)
+    }, 0)
 }

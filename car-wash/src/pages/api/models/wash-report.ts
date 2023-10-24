@@ -5,6 +5,11 @@ export interface WashReport {
   totalRate: number;
 }
 
+export interface MonthlyReportResponse {
+  data: MonthlyReport[];
+  totalBalance: number;
+}
+
 export interface MonthlyReport {
   week: string;
   washerCount: number;
