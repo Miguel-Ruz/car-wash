@@ -135,13 +135,24 @@
         "MonthlyReport": {
           "type": "object",
           "properties": {
-            "week": {
-              "type": "string"
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "week": {
+                    "type": "string"
+                  },
+                  "washerCount": {
+                    "type": "string"
+                  },
+                  "total": {
+                    "type": "number"
+                  }
+                }
+              }
             },
-            "washerCount": {
-              "type": "string"
-            },
-            "total": {
+            "totalBalance": {
               "type": "number"
             }
           }
