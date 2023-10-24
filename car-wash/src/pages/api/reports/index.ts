@@ -61,7 +61,8 @@ async function getReport(req: NextApiRequest): Promise<WashReport> {
       vehicleType: true,
       washType: true,
       rate: true,
-      createdAt: true
+      createdAt: true,
+      paymentType: true
     }
   });
   const total = list
