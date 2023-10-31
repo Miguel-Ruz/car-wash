@@ -51,6 +51,7 @@ type ValidationState = {
 
 const lavados = (props: Props) => {
   const [placasFilter, setPlacasFilter] = useState("");
+  const [washTypeFilter, setWashTypeFilter] = useState("");
   const [loading, setLoading] = useState(false); // Estado para rastrear la carga de la solicitud
   const [wash, setWash] = useState({});
   const [stepperStep, setStepperStep] = useState({
@@ -81,6 +82,12 @@ const lavados = (props: Props) => {
     !createWash.clientName ||
     !createWash.vehicleType ||
     !createWash.licensePlate;
+
+  const isButtonDisabledWashData =
+    !createWash.washerId ||
+    !createWash.washType ||
+    !createWash.rate ||
+    !createWash.paymentType;
 
   // Función para validar y formatear la placa
   const validateLicensePlate = (value: string) => {
@@ -165,9 +172,14 @@ const lavados = (props: Props) => {
   const listWasher = useFetchData(urlListWasher);
 
   //filtrar por placas
-  const filteredData = listWashes.data?.data?.filter((item) =>
-    item.licensePlate.includes(placasFilter)
-  );
+  const filteredData = listWashes.data?.data?.filter((item) => {
+    const matchesPlacas = item.licensePlate.includes(placasFilter);
+    // Obtener el valor seleccionado del Select
+    const matchesWashTypes = item.washType.includes(washTypeFilter);
+
+    // El elemento se incluirá en los resultados si cumple ambas condiciones
+    return matchesPlacas && matchesWashTypes;
+  });
 
   const thWidth = "18vw";
 
@@ -191,9 +203,6 @@ const lavados = (props: Props) => {
   var handleModalClose = () => {
     onClose(); // Cierra el modal
   };
-  const isData = hasValuesOnObject(wash);
-  console.log(wash, "washPostData1");
-  console.log(isData, "washPostData2");
   return (
     <DashboardLayout>
       <TopBar title="Lavados" />
@@ -215,10 +224,11 @@ const lavados = (props: Props) => {
             size="md"
             variant="outline"
             w="400px"
+            value={washTypeFilter}
+            onChange={(e) => setWashTypeFilter(e.target.value)}
           >
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+            <option value="DRY">DRY</option>
+            <option value="FULL">FULL</option>
           </Select>
         </Flex>
         <Box>
@@ -263,7 +273,11 @@ const lavados = (props: Props) => {
                   <Td>
                     <Tooltip hasArrow label="Cerrar día" placement="auto">
                       <Stack align="end">
-                        <FiCalendar cursor="pointer" color="#319795" />{" "}
+                        <FiCalendar
+                          onClick={}
+                          cursor="pointer"
+                          color="#319795"
+                        />{" "}
                         {/* ALINEAR A LA DERECHA ESTE BENDITO ICONITO. ME HIZO BOTAR EL CHUPO */}
                       </Stack>
                     </Tooltip>
@@ -288,6 +302,7 @@ const lavados = (props: Props) => {
             isButtonDisabled={isButtonDisabled}
             handleSubmitCreateWash={handleSubmitCreateWash}
             loading={loading}
+            isButtonDisabledWashData={isButtonDisabledWashData}
           />
         )}
       </ModalGlobal>

@@ -24,6 +24,7 @@ type Props = {
   isButtonDisabled: boolean;
   handleSubmitCreateWashe: () => void;
   loading: boolean;
+  isButtonDisabledWashData: boolean;
 };
 
 const ModalAddWash = ({
@@ -35,7 +36,9 @@ const ModalAddWash = ({
   listWasher,
   isButtonDisabled,
   handleSubmitCreateWash,
+
   loading,
+  isButtonDisabledWashData,
 }: Props) => {
   const { clientData, washData } = stepperStep;
   return (
@@ -58,6 +61,7 @@ const ModalAddWash = ({
           listWasher={listWasher}
           handleSubmitCreateWash={handleSubmitCreateWash}
           loading={loading}
+          isButtonDisabledWashData={isButtonDisabledWashData}
         />
       )}
     </>

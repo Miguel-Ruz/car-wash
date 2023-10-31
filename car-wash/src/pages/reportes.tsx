@@ -19,9 +19,23 @@ import {
   TableContainer,
 } from "@chakra-ui/react";
 
+//hooks
+import useFetchData from "../hooks/useFetchData";
+
+//utils
+import { formatCurrency } from "../utilitis/formatter";
+
 type Props = {};
 
 const reportes = (props: Props) => {
+  //fetch
+  const url = "http://localhost:3000/api/reports?format=daily";
+  const { data: dailyData, loading: loadingDayli } = useFetchData(url);
+
+  const urlMonthly = "http://localhost:3000/api/reports/monthly";
+  const { data: monthlyData, loading: loadingMonthly } =
+    useFetchData(urlMonthly);
+
   return (
     <DashboardLayout>
       <Tabs>
@@ -48,27 +62,16 @@ const reportes = (props: Props) => {
                   </Tr>
                 </Thead>
                 <Tbody fontSize="14px">
-                  <Tr>
-                    <Td fontWeight="500">Segun Adebayo</Td>
-                    <Td fontWeight="500">Taxi</Td>
-                    <Td>Abajo y arriba</Td>
-                    <Td>Efectivo</Td>
-                    <Td isNumeric>$15.000</Td>
-                  </Tr>
-                  <Tr>
-                    <Td fontWeight="500">Segun Adebayo</Td>
-                    <Td fontWeight="500">Taxi</Td>
-                    <Td>Abajo y arriba</Td>
-                    <Td>Efectivo</Td>
-                    <Td isNumeric>$15.000</Td>
-                  </Tr>
-                  <Tr>
-                    <Td fontWeight="500">Segun Adebayo</Td>
-                    <Td fontWeight="500">Taxi</Td>
-                    <Td>Abajo y arriba</Td>
-                    <Td>Efectivo</Td>
-                    <Td isNumeric>$15.000</Td>
-                  </Tr>
+                  {dailyData &&
+                    dailyData.data.map((item: any) => (
+                      <Tr key={item.createdAt}>
+                        <Td fontWeight="500">{item.clientName}</Td>
+                        <Td fontWeight="500">{item.vehicleType}</Td>
+                        <Td>{item.washType}</Td>
+                        <Td>{item.paymentType}</Td>
+                        <Td isNumeric>{formatCurrency(item.rate)}</Td>
+                      </Tr>
+                    ))}
                 </Tbody>
                 <Tfoot bg="#EDF2F7" h="52px">
                   <Tr>
@@ -83,7 +86,7 @@ const reportes = (props: Props) => {
                       Balance total
                     </Th>
                     <Th isNumeric fontSize="14px" fontWeight="700">
-                      $135.000
+                      {formatCurrency(dailyData?.totalRate)}
                     </Th>
                   </Tr>
                 </Tfoot>
@@ -105,21 +108,14 @@ const reportes = (props: Props) => {
                   </Tr>
                 </Thead>
                 <Tbody fontSize="14px">
-                  <Tr>
-                    <Td fontWeight="500">01/08/2022 - 07/08/2022</Td>
-                    <Td fontWeight="500">63</Td>
-                    <Td isNumeric>$945.000</Td>
-                  </Tr>
-                  <Tr>
-                    <Td fontWeight="500">01/08/2022 - 07/08/2022</Td>
-                    <Td fontWeight="500">63</Td>
-                    <Td isNumeric>$945.000</Td>
-                  </Tr>
-                  <Tr>
-                    <Td fontWeight="500">01/08/2022 - 07/08/2022</Td>
-                    <Td fontWeight="500">63</Td>
-                    <Td isNumeric>$945.000</Td>
-                  </Tr>
+                  {monthlyData &&
+                    monthlyData?.data?.map((item: any, index) => (
+                      <Tr key={index}>
+                        <Td fontWeight="500">{item.week}</Td>
+                        <Td fontWeight="500">{item.washerCount}</Td>
+                        <Td isNumeric>{formatCurrency(item.total)}</Td>
+                      </Tr>
+                    ))}
                 </Tbody>
                 <Tfoot bg="#EDF2F7" h="52px">
                   <Tr>
@@ -133,7 +129,7 @@ const reportes = (props: Props) => {
                       Balance total
                     </Th>
                     <Th isNumeric fontSize="14px" fontWeight="700">
-                      $135.000
+                      {formatCurrency(monthlyData?.totalBalance)}
                     </Th>
                   </Tr>
                 </Tfoot>

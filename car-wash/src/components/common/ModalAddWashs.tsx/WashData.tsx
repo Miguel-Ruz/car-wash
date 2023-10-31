@@ -29,6 +29,7 @@ type Props = {
   listWasher: any;
   handleSubmitCreateWash: () => void;
   loading: boolean;
+  isButtonDisabledWashData: boolean;
 };
 
 const WashData = ({
@@ -39,6 +40,7 @@ const WashData = ({
   listWasher,
   handleSubmitCreateWash,
   loading,
+  isButtonDisabledWashData,
 }: Props) => {
   return (
     <>
@@ -124,6 +126,7 @@ const WashData = ({
           ml={3}
           onClick={(e) => handleSubmitCreateWash(e)}
           isLoading={loading}
+          isDisabled={isButtonDisabledWashData}
         >
           Guardar
         </Button>
