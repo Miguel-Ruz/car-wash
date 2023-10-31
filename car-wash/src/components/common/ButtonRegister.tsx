@@ -1,8 +1,13 @@
-import React from "react"
-import { Box, Button } from "@chakra-ui/react"
-import { FiPlus } from "react-icons/fi"
+import React from "react";
+import { Box, Button, useDisclosure } from "@chakra-ui/react";
+import { FiPlus } from "react-icons/fi";
 
-const ButtonRegister = () => {
+type Props = {
+  title: string;
+  onOpen: () => void;
+};
+
+const ButtonRegister = ({ title, onOpen }: Props) => {
   return (
     <Box>
       <Button
@@ -15,11 +20,12 @@ const ButtonRegister = () => {
         p="18px 12px"
         fontWeight="semibold"
         _hover={{ bg: "#258685" }}
+        onClick={onOpen}
       >
-        Registrar nuevo lavador
+        {title}
       </Button>
     </Box>
-  )
-}
+  );
+};
 
-export default ButtonRegister
+export default ButtonRegister;

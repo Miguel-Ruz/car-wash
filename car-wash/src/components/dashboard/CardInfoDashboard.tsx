@@ -5,7 +5,7 @@ type Props = {
   bgColor: string;
   bgIconColor: string;
   title: string;
-  amount: number;
+  amount: number | string;
   iconCard?: ReactNode;
 };
 
@@ -40,7 +40,7 @@ const CardInfoDashboard = ({
       </HStack>
       {/* logica a cambiar: colocar condicionalmente simbolo de peso */}
       <Text fontSize="2xl" fontWeight="semibold">
-        {amount.toString().length > 2
+        {amount?.toString().length > 2
           ? "$" + amount.toLocaleString("es")
           : amount}
       </Text>
