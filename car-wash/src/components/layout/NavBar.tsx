@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Button,
   Flex,
   Heading,
   HStack,
@@ -11,15 +12,15 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
+import { signOut } from "next-auth/react";
 import { AiOutlineDown } from "react-icons/ai";
-
 
 type Props = {};
 
 const NavBar = (props: Props) => {
   return (
     <Flex
-    as="nav"
+      as="nav"
       align="center"
       justify="space-between"
       paddingTop="16px"
@@ -48,6 +49,11 @@ const NavBar = (props: Props) => {
           <MenuButton>
             <AiOutlineDown />
           </MenuButton>
+          <MenuList>
+            <MenuItem onClick={() => signOut({ callbackUrl: "/auth/admin" })}>
+              Logout
+            </MenuItem>
+          </MenuList>
         </Menu>
       </HStack>
     </Flex>
