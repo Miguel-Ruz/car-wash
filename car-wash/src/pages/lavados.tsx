@@ -7,6 +7,7 @@ import {
   Avatar,
   Badge,
   Box,
+  Button,
   Flex,
   Input,
   Select,
@@ -29,6 +30,7 @@ import { FiCalendar } from "react-icons/fi";
 import ModalGlobal from "../components/common/ModalGlobal";
 import ModalAddWash from "../components/common/ModalAddWashs.tsx/ModalAddWash";
 import postWash from "../services/postWash";
+import patchWash from "../services/patchWash";
 import { hasValuesOnObject } from "../utilitis/validators";
 import SuccessData from "../components/common/ModalAddWashs.tsx/SuccessData";
 
@@ -137,10 +139,7 @@ const lavados = (props: Props) => {
       //fetch
       try {
         const response = await postWash(createWash);
-        console.log(
-          "🚀 ~ file: lavados.tsx:133 ~ handleSubmitCreateWash ~ response:",
-          response
-        );
+
         // La petición se ha completado exitosamente
         setWash(response);
       } catch (error) {
@@ -151,6 +150,17 @@ const lavados = (props: Props) => {
       }
     } else {
       alert("Por favor, complete el formulario correctamente.");
+    }
+  };
+
+  const finishWash = async (id) => {
+    try {
+      const response = await patchWash(id);
+      console.log(response, "completed, listo");
+    } catch (error) {
+      console.log(error, "error");
+    } finally {
+      location.reload();
     }
   };
   console.log(loading, "loading post");
@@ -184,8 +194,8 @@ const lavados = (props: Props) => {
   const thWidth = "18vw";
 
   const badgeStatus: STATUS = {
-    WAITING: "red",
-    IN_PROGRESS: "yellow",
+    WAITING: "yellow",
+    IN_PROGRESS: "red",
     COMPLETED: "green",
   };
 
@@ -273,13 +283,26 @@ const lavados = (props: Props) => {
                         <BadgeStatus status={item?.status} item={item} />
                       </Td>
                       <Td>
-                        <Tooltip hasArrow label="Cerrar día" placement="auto">
+                        <Tooltip placement="auto">
                           <Stack align="end">
-                            <FiCalendar
+                            {/* <FiCalendar
                               onClick={onOpen}
                               cursor="pointer"
                               color="#319795"
-                            />{" "}
+                            /> */}{" "}
+                            <Button
+                              w="108px"
+                              h="32px"
+                              bg="buttonColor"
+                              color="mainColor"
+                              fontSize="14px"
+                              p="18px 12px"
+                              fontWeight="semibold"
+                              _hover={{ bg: "#258685" }}
+                              onClick={() => finishWash(item?.id)}
+                            >
+                              Finalizar
+                            </Button>
                             {/* ALINEAR A LA DERECHA ESTE BENDITO ICONITO. ME HIZO BOTAR EL CHUPO */}
                           </Stack>
                         </Tooltip>
