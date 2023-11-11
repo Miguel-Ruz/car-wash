@@ -6,7 +6,8 @@ interface Washer {
   documentId: string;
   createdAt: string;
   status: boolean;
-  washes: any[]; // Ajusta este tipo al tipo real de "washes"
+  washes: number;
+  earnings: number;
 }
 
 type HttpMethod = "GET" | "POST";
