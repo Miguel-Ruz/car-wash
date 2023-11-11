@@ -31,7 +31,7 @@ model Wash {
   washType String
   rate String
   paymentType String
-  status WashStatus @default(WAITING)
+  status WashStatus @default(IN_PROGRESS)
   createdAt DateTime @default(now())
   washer Washer @relation(fields: [washerId], references: [id])
   washerId String @db.Uuid

@@ -35,8 +35,9 @@ interface Washer {
   id: string;
   name: string;
   documentId: string;
-  washes: any[];
+  washes: number;
   status: boolean;
+  earnings: number;
 }
 
 const lavadores = (props: Props) => {
@@ -138,8 +139,8 @@ const lavadores = (props: Props) => {
                     <Tr key={washer.id}>
                       <Td>{washer?.name}</Td>
                       <Td isNumeric>{washer?.documentId}</Td>
-                      <Td isNumeric>{washer?.washes.length}</Td>
-                      <Td isNumeric>$---</Td>
+                      <Td isNumeric>{washer?.washes}</Td>
+                      <Td isNumeric>{washer?.earnings}</Td>
                       <Td>
                         <Tooltip hasArrow label="Cerrar día" placement="auto">
                           <Stack align="end">
@@ -155,7 +156,6 @@ const lavadores = (props: Props) => {
             </Table>
           </TableContainer>
         </Box>
-      </>
       <ModalGlobal handleModalClose={handleModalClose} isOpen={isOpen}>
         <ModalAddWasherr
           initialRef={null}
@@ -167,6 +167,7 @@ const lavadores = (props: Props) => {
           setError={setError}
         />
       </ModalGlobal>
+      </>
     </DashboardLayout>
   );
 };

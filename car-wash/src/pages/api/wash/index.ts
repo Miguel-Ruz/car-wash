@@ -25,7 +25,6 @@ export default async function handler(
         const result = await createWash(req);
         return res.status(200).json(result);
       } catch (error) {
-        console.log(error)
         return res.status(400).json({ message: 'error creating the wash', error });
       }
     case 'GET':
@@ -36,6 +35,14 @@ export default async function handler(
         console.log(error)
         return res.status(400).json({ message: 'error getting the wash list', error });
       }
+    case 'PATCH': {
+      try {
+        const result = await patchWash(req);
+        return res.status(200).json(result);
+      } catch (error) {
+        return res.status(400).json({ message: 'error updating the wash', error });
+      }
+    }
     default:
       return res.status(404).json({ message: 'Invalid method' })
   }
@@ -97,4 +104,13 @@ function filterWashList(req: NextApiRequest) {
     }
   }
   return filters;
+}
+
+async function patchWash(req: NextApiRequest) {
+  const id = req.query.id as string;
+  const washObj = await prisma.wash.update({
+    where: { id },
+    data: req.body
+  });
+  return washObj;
 }

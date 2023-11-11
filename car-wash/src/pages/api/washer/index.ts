@@ -51,8 +51,16 @@ async function getWasherList(req: NextApiRequest): Promise<Washer[]> {
       }
     },
     where: filterWasherList(req)
-  })
-  return list;
+  });
+
+  return list.map(item => {
+    const sumOfRates = item.washes.reduce((acc, wash) => acc + Number(wash.rate), 0);
+    return {
+      ...item,
+      washes: item.washes.length,
+      earnings: sumOfRates
+    }
+  });
 }
 
 async function createWasher(req: NextApiRequest): Promise<Washer> {
