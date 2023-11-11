@@ -130,7 +130,6 @@ const lavadores = (props: Props) => {
                   <Th w={thWidth} isNumeric>
                     Ganancia
                   </Th>
-                  <Th />
                 </Tr>
               </Thead>
               <Tbody>
@@ -141,14 +140,13 @@ const lavadores = (props: Props) => {
                       <Td isNumeric>{washer?.documentId}</Td>
                       <Td isNumeric>{washer?.washes}</Td>
                       <Td isNumeric>{washer?.earnings}</Td>
-                      <Td>
+                      {/* <Td>
                         <Tooltip hasArrow label="Cerrar día" placement="auto">
                           <Stack align="end">
                             <FiCalendar cursor="pointer" color="#319795" />{" "}
-                            {/* ALINEAR A LA DERECHA ESTE BENDITO ICONITO. ME HIZO BOTAR EL CHUPO */}
                           </Stack>
                         </Tooltip>
-                      </Td>
+                      </Td> */}
                     </Tr>
                   );
                 })}
@@ -156,17 +154,17 @@ const lavadores = (props: Props) => {
             </Table>
           </TableContainer>
         </Box>
-      <ModalGlobal handleModalClose={handleModalClose} isOpen={isOpen}>
-        <ModalAddWasherr
-          initialRef={null}
-          name={name}
-          setName={setName}
-          documento={documento}
-          setDocumento={setDocumento}
-          handleModalClose={handleModalClose}
-          setError={setError}
-        />
-      </ModalGlobal>
+        <ModalGlobal handleModalClose={handleModalClose} isOpen={isOpen}>
+          <ModalAddWasherr
+            initialRef={null}
+            name={name}
+            setName={setName}
+            documento={documento}
+            setDocumento={setDocumento}
+            handleModalClose={handleModalClose}
+            setError={setError}
+          />
+        </ModalGlobal>
       </>
     </DashboardLayout>
   );
