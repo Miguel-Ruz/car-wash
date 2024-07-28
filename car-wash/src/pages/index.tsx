@@ -55,7 +55,7 @@ export default function Home() {
               justify="space-between"
             >
               <Flex direction="column" color="mainColor" rowGap="16px">
-                <Heading size="xl">Mav Wash</Heading>
+                <Heading size="xl">Wash Admin</Heading>
                 <Text
                   fontSize="lg"
                   color=" rgba(255, 255, 255, 0.8)"
@@ -65,7 +65,7 @@ export default function Home() {
                 </Text>
               </Flex>
 
-              <Image src={logo} alt="logo de la app" priority />
+              {/* <Image src={logo} alt="logo de la app" priority /> */}
             </Flex>
           </Box>
 
