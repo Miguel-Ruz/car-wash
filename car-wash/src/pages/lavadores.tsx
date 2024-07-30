@@ -47,7 +47,7 @@ const lavadores = (props: Props) => {
   const [documento, setDocumento] = useState("");
   const [error, setError] = useState(false);
 
-  var handleModalClose = () => {
+  let handleModalClose = () => {
     setName(""); // Restablece el valor de name a una cadena vacía
     setDocumento(""); // Restablece el valor de documento a una cadena vacía
     onClose(); // Cierra el modal
@@ -62,20 +62,20 @@ const lavadores = (props: Props) => {
   const { data } = useFetchData(url);
 
   //filtro
-  const filteredData =
-    data &&
-    data?.filter((item) => {
-      // Filtrar por nombre
-      const nameMatches = item.name
-        .toLowerCase()
-        .includes(nameFilter.toLowerCase());
+  const filteredData = data
+    ? data?.filter((item) => {
+        // Filtrar por nombre
+        const nameMatches = item.name
+          .toLowerCase()
+          .includes(nameFilter.toLowerCase());
 
-      // Filtrar por documento
-      const documentMatches = item.documentId.includes(documentFilter);
+        // Filtrar por documento
+        const documentMatches = item.documentId.includes(documentFilter);
 
-      // Combinar ambas condiciones (AND lógico)
-      return nameMatches && documentMatches;
-    });
+        // Combinar ambas condiciones (AND lógico)
+        return nameMatches && documentMatches;
+      })
+    : null;
   return (
     <DashboardLayout>
       <>

@@ -268,8 +268,7 @@ const lavados = (props: Props) => {
                       <Td>
                         <WrapItem alignItems="center">
                           <Avatar
-                            name="Dan Abrahmov"
-                            src="https://bit.ly/dan-abramov"
+                            name={item?.clientName}
                             mr="12px"
                           />
                           {item?.clientName}

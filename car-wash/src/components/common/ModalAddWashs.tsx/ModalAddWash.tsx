@@ -22,7 +22,7 @@ type Props = {
   };
   listWasher: any;
   isButtonDisabled: boolean;
-  handleSubmitCreateWashe: () => void;
+  handleSubmitCreateWash: (e: React.FormEvent) => Promise<void>;
   loading: boolean;
   isButtonDisabledWashData: boolean;
 };
