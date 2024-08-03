@@ -76,7 +76,7 @@ const lavados = (props: Props) => {
     vehicleType: false,
     licensePlate: false,
     washType: false,
-    rate: false,
+    // rate: false,
     paymentType: false,
   });
 
@@ -88,7 +88,6 @@ const lavados = (props: Props) => {
   const isButtonDisabledWashData =
     !createWash.washerId ||
     !createWash.washType ||
-    !createWash.rate ||
     !createWash.paymentType;
 
   // Función para validar y formatear la placa
@@ -138,7 +137,7 @@ const lavados = (props: Props) => {
       setLoading(true); // Establece el estado de carga a verdadero antes de la petición
       //fetch
       try {
-        const response = await postWash(createWash);
+        const response = await postWash({ ...createWash, rate: createWash.washType === "FULL" ? "13000" : createWash.washType === "DRY" ? "15000" : "" });
 
         // La petición se ha completado exitosamente
         setWash(response);
@@ -312,7 +311,7 @@ const lavados = (props: Props) => {
             </Table>
           </TableContainer>
         </Box>
-        <ModalGlobal handleModalClose={handleModalClose} isOpen={isOpen}>
+        <ModalGlobal handleModalClose={handleModalClose} isOpen={isOpen} wash={wash}>
           {hasValuesOnObject(wash) ? (
             <SuccessData handleModalClose={handleModalClose} />
           ) : (

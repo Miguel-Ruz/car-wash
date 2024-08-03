@@ -31,7 +31,11 @@ const SuccessData = ({ handleModalClose }: Props) => {
             Editar
           </Button>
           {/* fata recargar la pagina cuando se cierre le modal de exito */}
-          <Button colorScheme="teal" ml={3} onClick={handleModalClose}>
+          <Button colorScheme="teal" ml={3} onClick={() => {
+            handleModalClose()
+            window.location.reload();
+          }
+          }>
             Cerrar
           </Button>
         </ModalFooter>

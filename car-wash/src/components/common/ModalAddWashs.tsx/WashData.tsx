@@ -96,8 +96,8 @@ const WashData = ({
           <Select
             placeholder="Tipo de lavado"
             name="rate"
-            value={createWash.rate}
-            onChange={(e) => handleChangeCreateWash(e)}
+            value={createWash.washType === "FULL" ? "13000" : createWash.washType === "DRY" ? "15000" : ""}
+            disabled
           >
             <option value="13000">FULL - $13.000</option>
             <option value="15000">DRY - $15.000</option>
@@ -107,7 +107,7 @@ const WashData = ({
         <Box pt="8">
           <Steper indexStep={indexStep} />
         </Box>
-      </ModalBody>
+      </ModalBody >
 
       <ModalFooter>
         <Button
