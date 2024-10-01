@@ -32,7 +32,6 @@ export default async function handler(
         const result = await getWashList(req);
         return res.status(200).json(result);
       } catch (error) {
-        console.log(error)
         return res.status(400).json({ message: 'error getting the wash list', error });
       }
     case 'PATCH': {
@@ -43,6 +42,18 @@ export default async function handler(
         return res.status(400).json({ message: 'error updating the wash', error });
       }
     }
+    case 'DELETE':
+      try {
+        const result = await removeWash(req);
+        if (result) {
+          return res.status(200).json({ message: 'wash removed successfully' });
+        } else {
+          return res.status(400).json({ message: 'field {id} is required' });  
+        }
+      } catch (error) {
+        console.log(error)
+        return res.status(400).json({ message: 'error deleting the wash', error });
+      }
     default:
       return res.status(404).json({ message: 'Invalid method' })
   }
@@ -94,7 +105,11 @@ async function getWashList(req: NextApiRequest): Promise<PaginatedResponse<Wash>
 }
 
 function filterWashList(req: NextApiRequest) {
-  const filters: any = {};
+  const filters: any = {
+    NOT: {
+      status: 'REMOVED'
+    }
+  };
   if (req.query.washType) {
     filters['washType'] = String(req.query.washType);
   }
@@ -113,4 +128,14 @@ async function patchWash(req: NextApiRequest) {
     data: req.body
   });
   return washObj;
+}
+
+async function removeWash(req: NextApiRequest) {
+  const id = req.query.id as string;
+  if (!id) return null;
+  const updatedWash = await prisma.wash.update({
+    where: { id },
+    data: { status: 'REMOVED' }
+  });
+  return updatedWash;
 }
