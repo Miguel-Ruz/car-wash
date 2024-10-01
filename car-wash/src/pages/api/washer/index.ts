@@ -29,6 +29,28 @@ export default async function handler(
       } catch (error) {
         return res.status(400).json({ message: 'error creating a washer', error });
       }
+    case 'DELETE':
+      try {
+        const result = await removeWasher(req);
+        if (result) {
+          return res.status(200).json({ message: 'washer removed' });
+        } else {
+          return res.status(400).json({ message: 'id is required' });
+        }
+      } catch (error) {
+        return res.status(400).json({ message: 'error removing a washer', error });
+      }
+    case 'PATCH':
+      try {
+        const result = await patchWasher(req);
+        if (result) {
+          return res.status(200).json(result);
+        } else {
+          return res.status(400).json({ message: 'id is required' });
+        }
+      } catch (error) {
+        return res.status(400).json({ message: 'error removing a washer', error });
+      }
     default:
       return res.status(404).json({ message: 'Invalid method' })
   }
@@ -46,7 +68,7 @@ async function getWasherList(req: NextApiRequest): Promise<Washer[]> {
           createdAt: {
             lte: new Date(`${date} 23:59:59`),
             gte: new Date(`${date} 00:00:00`)
-          }
+          },
         }
       }
     },
@@ -74,8 +96,34 @@ async function createWasher(req: NextApiRequest): Promise<Washer> {
   return washerObj;
 }
 
+async function removeWasher(req: NextApiRequest): Promise<Washer | null> {
+  const id = String(req.query.id);
+  if (!id) return null;
+  const washerObj = await prisma.washer.update({
+    where: {
+      id
+    },
+    data: { status: false }
+  });
+  return washerObj;
+}
+
+async function patchWasher(req: NextApiRequest): Promise<Washer | null> {
+  const id = String(req.query.id);
+  if (!id) return null;
+  const washerObj = await prisma.washer.update({
+    where: {
+      id
+    },
+    data: req.body
+  });
+  return washerObj;
+}
+
 function filterWasherList(req: NextApiRequest): any {
-  const filters: any = {};
+  const filters: any = {
+    status: true
+  };
   if (req.query.name) {
     filters['name'] = {
       contains: String(req.query.name)

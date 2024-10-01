@@ -21,6 +21,9 @@ model Washer {
   createdAt  DateTime @default(now())
   status     Boolean  @default(true)
   washes     Wash[]
+  address    String
+  phone_number String
+  exp_id_date String
 }
 
 model Wash {
@@ -35,6 +38,12 @@ model Wash {
   createdAt    DateTime   @default(now())
   washer       Washer     @relation(fields: [washerId], references: [id])
   washerId     String     @db.Uuid
+}
+
+model WashType {
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String
+  value String
 }
 
 enum WashStatus {
