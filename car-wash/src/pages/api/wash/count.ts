@@ -31,6 +31,7 @@ async function getWashCounters(): Promise<WashCount> {
 
   const dailyPromise = prisma.wash.count({
     where: {
+      status: 'COMPLETED',
       createdAt: {
         lte: new Date(`${actualDate} 23:59:59`),
         gte: new Date(`${actualDate} 00:00:00`)
@@ -40,6 +41,7 @@ async function getWashCounters(): Promise<WashCount> {
 
   const weeklyPromise = prisma.wash.findMany({
     where: {
+      status: 'COMPLETED',
       createdAt: {
         lte: new Date(`${weeklyDate.end} 23:59:59`),
         gte: new Date(`${weeklyDate.start} 00:00:00`)
@@ -50,9 +52,9 @@ async function getWashCounters(): Promise<WashCount> {
     }
   });
 
-  console.log(weeklyDate)
   const monthlyPromise = prisma.wash.findMany({
     where: {
+      status: 'COMPLETED',
       createdAt: {
         lte: new Date(`${monthlyDate.end} 23:59:59`),
         gte: new Date(`${monthlyDate.start} 00:00:00`)
