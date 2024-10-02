@@ -33,12 +33,12 @@ import postWash from "../services/postWash";
 import patchWash from "../services/patchWash";
 import { hasValuesOnObject } from "../utilitis/validators";
 import SuccessData from "../components/common/ModalAddWashs.tsx/SuccessData";
+import { MdArrowDropDown } from "react-icons/md";
 
 type Props = {};
 type STATUS = {
-  WAITING: string;
-  IN_PROGRESS: string;
-  COMPLETED: string;
+  NO_PAGO: string;
+  PAGADO: string;
 };
 // Define un tipo para los estados de validación de los campos
 type ValidationState = {
@@ -79,6 +79,7 @@ const lavados = (props: Props) => {
     // rate: false,
     paymentType: false,
   });
+  const [washEstado, setWashEstado] = useState<string>('NO_PAGO')
 
   const isButtonDisabled =
     !createWash.clientName ||
@@ -193,18 +194,18 @@ const lavados = (props: Props) => {
   const thWidth = "18vw";
 
   const badgeStatus: STATUS = {
-    WAITING: "yellow",
-    IN_PROGRESS: "red",
-    COMPLETED: "green",
+    NO_PAGO: "red",
+    PAGADO: "green",
   };
 
-  const BadgeStatus = ({ status, item }) => {
-    const statusBadge = badgeStatus[status] || null;
-
+  const BadgeStatus = () => {
+    const statusBadge = badgeStatus[washEstado] || null;
+    console.log(washEstado, 'hola')
     return (
-      <Badge variant="solid" colorScheme={statusBadge}>
-        {item?.status}
-      </Badge>
+      <Select bg={statusBadge} icon={<MdArrowDropDown />} onChange={(e) => setWashEstado(e.target.value)}>
+        <option value='NO PAGO'>NO PAGO</option>
+        <option value='PAGADO'>PAGADO</option>
+      </Select>
     );
   };
 
@@ -278,7 +279,7 @@ const lavados = (props: Props) => {
                       <Td>{item?.washer.name}</Td>
                       <Td>{item?.washType}</Td>
                       <Td>
-                        <BadgeStatus status={item?.status} item={item} />
+                        <BadgeStatus />
                       </Td>
                       <Td>
                         <Tooltip placement="auto">
