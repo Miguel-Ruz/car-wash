@@ -66,16 +66,16 @@ async function getWasherList(req: NextApiRequest): Promise<Washer[]> {
   let createdAt = null;
   const date = getFormatedActualDate();
   if (reportType === 'weekly') {
-    createdAt = {
-      lte: new Date(`${date} 23:59:59`),
-      gte: new Date(`${date} 00:00:00`)
-    }
-  } else {
     const weeklyDate = getWeeklyDate();
     createdAt = {
       lte: new Date(`${weeklyDate.end} 23:59:59`),
       gte: new Date(`${weeklyDate.start} 00:00:00`)
     };
+  } else {
+    createdAt = {
+      lte: new Date(`${date} 23:59:59`),
+      gte: new Date(`${date} 00:00:00`)
+    }
   }
   const list = await prisma.washer.findMany({
     include: {
