@@ -153,7 +153,7 @@ const lavados = (props: Props) => {
     }
   };
 
-  const finishWash = async (id) => {
+  const finishWash = async (id: string) => {
     try {
       const response = await patchWash(id);
       console.log(response, "completed, listo");

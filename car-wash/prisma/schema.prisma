@@ -8,37 +8,47 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  username String
-  password String  @db.VarChar(50)
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username  String
+  password  String   @db.VarChar(50)
   createdAt DateTime @default(now())
 }
 
 model Washer {
-  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name String
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
   documentId String
-  createdAt DateTime @default(now())
-  status Boolean @default(true)
-  washes Wash[]
+  createdAt  DateTime @default(now())
+  status     Boolean  @default(true)
+  washes     Wash[]
+  address    String
+  phone_number String
+  exp_id_date String
 }
 
 model Wash {
-  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid 
-  clientName String
-  vehicleType String
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientName   String
+  vehicleType  String
   licensePlate String
-  washType String
-  rate String
-  paymentType String
-  status WashStatus @default(IN_PROGRESS)
-  createdAt DateTime @default(now())
-  washer Washer @relation(fields: [washerId], references: [id])
-  washerId String @db.Uuid
+  washType     String
+  rate         String
+  paymentType  String
+  status       WashStatus @default(IN_PROGRESS)
+  createdAt    DateTime   @default(now())
+  washer       Washer     @relation(fields: [washerId], references: [id])
+  washerId     String     @db.Uuid
+}
+
+model WashType {
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String
+  value String
 }
 
 enum WashStatus {
   WAITING
   IN_PROGRESS
   COMPLETED
+  REMOVED
 }
