@@ -10,7 +10,9 @@ const washerSchema = z.object({
   documentId: z.string().min(1, 'document ID es requerido'),
   address: z.string().min(1, 'Address es requerido'),
   exp_id_date: z.string().min(1, 'Fecha de expiracion es requerido'),
-  phone_number: z.string().min(1, 'Phone number es requerido')
+  phone_number: z.string().min(1, 'Phone number es requerido'),
+  city: z.string().min(1, 'City es requerido'),
+  department: z.string().min(1, 'Department es requerido')
 });
 
 export default async function handler(

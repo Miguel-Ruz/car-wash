@@ -27,6 +27,8 @@ model Washer {
   createdAt  DateTime @default(now())
   status     Boolean  @default(true)
   washes     Wash[]
+  city String
+  department String
   address    String
   phone_number String
   exp_id_date String
