@@ -1,13 +1,18 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { GeneralError } from "../models/general-error";
 import { prisma } from '../../../libs/prisma';
-import { getFormatedActualDate } from "../../../libs/util";
+import { getFormatedActualDate, getWeeklyDate } from "../../../libs/util";
 import { Washer } from "@prisma/client";
 import { z } from "zod";
 
 const washerSchema = z.object({
   name: z.string().min(1, 'name es requerido'),
   documentId: z.string().min(1, 'document ID es requerido'),
+  address: z.string().min(1, 'Address es requerido'),
+  exp_id_date: z.string().min(1, 'Fecha de expiracion es requerido'),
+  phone_number: z.string().min(1, 'Phone number es requerido'),
+  city: z.string().min(1, 'City es requerido'),
+  department: z.string().min(1, 'Department es requerido')
 });
 
 export default async function handler(
@@ -57,7 +62,21 @@ export default async function handler(
 }
 
 async function getWasherList(req: NextApiRequest): Promise<Washer[]> {
+  const reportType = req.query.type as string;
+  let createdAt = null;
   const date = getFormatedActualDate();
+  if (reportType === 'weekly') {
+    const weeklyDate = getWeeklyDate();
+    createdAt = {
+      lte: new Date(`${weeklyDate.end} 23:59:59`),
+      gte: new Date(`${weeklyDate.start} 00:00:00`)
+    };
+  } else {
+    createdAt = {
+      lte: new Date(`${date} 23:59:59`),
+      gte: new Date(`${date} 00:00:00`)
+    }
+  }
   const list = await prisma.washer.findMany({
     include: {
       washes: {
@@ -65,10 +84,7 @@ async function getWasherList(req: NextApiRequest): Promise<Washer[]> {
           rate: true,
         },
         where: {
-          createdAt: {
-            lte: new Date(`${date} 23:59:59`),
-            gte: new Date(`${date} 00:00:00`)
-          },
+          createdAt,
         }
       }
     },
@@ -88,10 +104,7 @@ async function getWasherList(req: NextApiRequest): Promise<Washer[]> {
 async function createWasher(req: NextApiRequest): Promise<Washer> {
   const request = washerSchema.parse(req.body);
   const washerObj = await prisma.washer.create({
-    data: {
-      name: request.name,
-      documentId: request.documentId
-    }
+    data: request
   });
   return washerObj;
 }
