@@ -30,6 +30,11 @@ type Props = {
   isButtonDisabled: boolean;
 };
 
+const steps = [
+  { title: "Paso 1", description: "Datos del cliente" },
+  { title: "Paso 2", description: "Datos del lavado" },
+];
+
 const ClientData = ({
   indexStep,
   setStepperStep,
@@ -77,7 +82,7 @@ const ClientData = ({
           />
         </FormControl>
         <Box pt="8">
-          <Steper indexStep={indexStep} />
+          <Steper indexStep={indexStep} steps={steps} />
         </Box>
       </ModalBody>
 

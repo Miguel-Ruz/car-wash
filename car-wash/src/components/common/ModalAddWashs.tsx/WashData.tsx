@@ -32,6 +32,11 @@ type Props = {
   isButtonDisabledWashData: boolean;
 };
 
+const steps = [
+  { title: "Paso 1", description: "Datos del cliente" },
+  { title: "Paso 2", description: "Datos del lavado" },
+];
+
 const WashData = ({
   indexStep,
   setStepperStep,
@@ -105,7 +110,7 @@ const WashData = ({
         </FormControl>
 
         <Box pt="8">
-          <Steper indexStep={indexStep} />
+          <Steper indexStep={indexStep} steps={steps} />
         </Box>
       </ModalBody >
 

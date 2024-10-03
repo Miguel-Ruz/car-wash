@@ -13,23 +13,27 @@ import {
 } from "@chakra-ui/stepper";
 import { Box } from "@chakra-ui/react";
 
-const steps = [
-  { title: "Paso 1", description: "Datos del cliente" },
-  { title: "Paso 2", description: "Datos del lavado" },
-];
 
-type Props = {
+
+interface StepProps {
+  title: string;
+  description: string;
+}
+
+interface SteperProps {
   indexStep: number;
-};
+  steps: StepProps[];
+}
 
-const Steper = ({ indexStep }: Props) => {
+const Steper = ({ indexStep, steps = [] }: SteperProps) => {
   const { activeStep } = useSteps({
     index: indexStep,
     count: steps.length,
   });
+
   return (
     <Stepper size="sm" index={activeStep} colorScheme="teal">
-      {steps.map((step, index) => (
+      {steps.map((step: { title: string, description: string }, index: number) => (
         <Step key={index}>
           <StepIndicator>
             <StepStatus

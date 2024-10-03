@@ -163,10 +163,7 @@ const lavados = (props: Props) => {
       location.reload();
     }
   };
-  console.log(loading, "loading post");
-  useEffect(() => {
-    console.log(createWash, "holaola");
-  }, [createWash]);
+
 
   //open modal
   const { isOpen, onOpen, onClose } = useDisclosure();

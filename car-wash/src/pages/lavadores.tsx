@@ -26,7 +26,7 @@ import ButtonRegister from "../components/common/ButtonRegister";
 import useFetchData from "../hooks/useFetchData";
 
 //utils
-import ModalAddWasherr from "../components/common/ModalAddWasherr";
+import ModalAddWasherr from "../components/common/ModalAddWasher/ModalAddWasherr";
 import ModalGlobal from "../components/common/ModalGlobal";
 
 type Props = {};
@@ -39,17 +39,66 @@ interface Washer {
   status: boolean;
   earnings: number;
 }
+// Define un tipo para los estados de validación de los campos
+type ValidationState = {
+  name: boolean,
+  documento: boolean,
+  exp_id_date: boolean,
+  phone_number: boolean,
+  address: boolean,
+  ciudad: boolean,
+  departamento: boolean
+};
 
 const lavadores = (props: Props) => {
   const [nameFilter, setNameFilter] = useState("");
   const [documentFilter, setDocumentFilter] = useState("");
-  const [name, setName] = useState("");
-  const [documento, setDocumento] = useState("");
   const [error, setError] = useState(false);
 
+  const [createWasher, setCreateWasher] = useState({
+    name: "",
+    documento: "",
+    exp_id_date: "",
+    phone_number: "",
+    address: "",
+    ciudad: "",
+    departamento: ""
+  })
+  // Estado para manejar la validación de campos
+  const [validation, setValidation] = useState<ValidationState>({
+    name: false,
+    documento: false,
+    exp_id_date: false,
+    phone_number: false,
+    address: false,
+    ciudad: false,
+    departamento: false
+  });
+
+  const [stepperStep, setStepperStep] = useState({
+    washerData1: true,
+    washerData2: false,
+  });
+
+  console.log(createWasher, 'hoa')
+
+  const handleChangeCreateWasher = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setCreateWasher({
+      ...createWasher,
+      [name]: value,
+    });
+
+    setValidation({
+      ...validation,
+      [name]: value,
+    });
+  };
+
   let handleModalClose = () => {
-    setName(""); // Restablece el valor de name a una cadena vacía
-    setDocumento(""); // Restablece el valor de documento a una cadena vacía
     onClose(); // Cierra el modal
   };
   //open modal
@@ -64,18 +113,30 @@ const lavadores = (props: Props) => {
   //filtro
   const filteredData = data
     ? data?.filter((item) => {
-        // Filtrar por nombre
-        const nameMatches = item.name
-          .toLowerCase()
-          .includes(nameFilter.toLowerCase());
+      // Filtrar por nombre
+      const nameMatches = item.name
+        .toLowerCase()
+        .includes(nameFilter.toLowerCase());
 
-        // Filtrar por documento
-        const documentMatches = item.documentId.includes(documentFilter);
+      // Filtrar por documento
+      const documentMatches = item.documentId.includes(documentFilter);
 
-        // Combinar ambas condiciones (AND lógico)
-        return nameMatches && documentMatches;
-      })
+      // Combinar ambas condiciones (AND lógico)
+      return nameMatches && documentMatches;
+    })
     : null;
+
+  const isButtonDisabled =
+    !createWasher.name ||
+    !createWasher.phone_number ||
+    !createWasher.documento ||
+    !createWasher.exp_id_date;
+
+  const isButtonDisabledWasher2 =
+    !createWasher.ciudad ||
+    !createWasher.departamento ||
+    !createWasher.address;
+
   return (
     <DashboardLayout>
       <>
@@ -157,12 +218,14 @@ const lavadores = (props: Props) => {
         <ModalGlobal handleModalClose={handleModalClose} isOpen={isOpen}>
           <ModalAddWasherr
             initialRef={null}
-            name={name}
-            setName={setName}
-            documento={documento}
-            setDocumento={setDocumento}
             handleModalClose={handleModalClose}
             setError={setError}
+            setStepperStep={setStepperStep}
+            stepperStep={stepperStep}
+            isButtonDisabled={isButtonDisabled}
+            handleChangeCreateWasher={handleChangeCreateWasher}
+            createWasher={createWasher}
+            isButtonDisabledWasher2={isButtonDisabledWasher2}
           />
         </ModalGlobal>
       </>
