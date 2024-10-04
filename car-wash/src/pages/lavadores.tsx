@@ -21,6 +21,8 @@ import { FiCalendar, FiPlus, FiSearch } from "react-icons/fi";
 import { DashboardLayout } from "../components";
 import TopBar from "../components/common/TopBar";
 import ButtonRegister from "../components/common/ButtonRegister";
+import postWasher from "../services/postWashers";
+
 
 //Custom hooks
 import useFetchData from "../hooks/useFetchData";
@@ -46,14 +48,16 @@ type ValidationState = {
   exp_id_date: boolean,
   phone_number: boolean,
   address: boolean,
-  ciudad: boolean,
-  departamento: boolean
+  city: boolean,
+  department: boolean
 };
 
 const lavadores = (props: Props) => {
   const [nameFilter, setNameFilter] = useState("");
   const [documentFilter, setDocumentFilter] = useState("");
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false); // Estado para rastrear la carga de la solicitud
+
 
   const [createWasher, setCreateWasher] = useState({
     name: "",
@@ -61,8 +65,8 @@ const lavadores = (props: Props) => {
     exp_id_date: "",
     phone_number: "",
     address: "",
-    ciudad: "",
-    departamento: ""
+    city: "",
+    department: ""
   })
   // Estado para manejar la validación de campos
   const [validation, setValidation] = useState<ValidationState>({
@@ -71,8 +75,8 @@ const lavadores = (props: Props) => {
     exp_id_date: false,
     phone_number: false,
     address: false,
-    ciudad: false,
-    departamento: false
+    city: false,
+    department: false
   });
 
   const [stepperStep, setStepperStep] = useState({
@@ -96,6 +100,49 @@ const lavadores = (props: Props) => {
       ...validation,
       [name]: value,
     });
+  };
+  // Función para verificar si el formulario es válido
+  const isFormValid = () => {
+    return Object.values(validation).every((isValid) => isValid);
+  };
+
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+
+    // Valida que los campos "name" y "documento" tengan valores antes de enviar la solicitud
+    // if (createWasher.name.trim() === "" || createWasher.documento.trim() === "")
+    if (isFormValid()) {
+      setLoading(true);
+      try {
+        const dataToSend = {
+          name: createWasher.name,
+          phone_number: createWasher.phone_number,
+          documentId: createWasher.documento,
+          exp_id_date: createWasher.exp_id_date,
+          city: createWasher.city,
+          department: createWasher.department,
+          address: createWasher.address,
+        };
+
+        //fetch
+        const data = await postWasher(dataToSend);
+        //cerrar modal y recargar la pagina
+        // if (data) {
+        //   handleModalClose();
+        //   window.location.reload();
+        // }
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false); // Establece el estado de carga a falso después de la petición
+      }
+    }
+
+
+
+
   };
 
   let handleModalClose = () => {
@@ -133,8 +180,8 @@ const lavadores = (props: Props) => {
     !createWasher.exp_id_date;
 
   const isButtonDisabledWasher2 =
-    !createWasher.ciudad ||
-    !createWasher.departamento ||
+    !createWasher.city ||
+    !createWasher.department ||
     !createWasher.address;
 
   return (
@@ -226,6 +273,8 @@ const lavadores = (props: Props) => {
             handleChangeCreateWasher={handleChangeCreateWasher}
             createWasher={createWasher}
             isButtonDisabledWasher2={isButtonDisabledWasher2}
+            handleSubmit={handleSubmit}
+            loading={loading}
           />
         </ModalGlobal>
       </>

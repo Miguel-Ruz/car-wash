@@ -26,10 +26,13 @@ type Props = {
         documento: string,
         exp_id_date: string,
         phone_number: string,
-        address: string
+        address: string,
+        city: string,
+        department: string
     },
     handleChangeCreateWasher: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    isButtonDisabledWasher2: boolean
+    isButtonDisabledWasher2: boolean,
+    loading: boolean
 }
 const steps = [
     { title: "Paso 1", description: "Datos del lavador" },
@@ -44,7 +47,8 @@ const ModalWasher2 = ({
     setStepperStep,
     createWasher,
     handleChangeCreateWasher,
-    isButtonDisabledWasher2
+    isButtonDisabledWasher2,
+    loading
 }: Props) => {
     return (
         <>
@@ -55,8 +59,8 @@ const ModalWasher2 = ({
                     <FormLabel>Ciudad</FormLabel>
                     <Input
                         placeholder="Escribe el nombre de la ciudad"
-                        name="ciudad"
-                        value={createWasher.ciudad}
+                        name="city"
+                        value={createWasher.city}
                         onChange={(e) => handleChangeCreateWasher(e)}
                     />
                 </FormControl>
@@ -65,8 +69,8 @@ const ModalWasher2 = ({
                     <FormLabel>Departamento</FormLabel>
                     <Input
                         placeholder="Escribe el nombre del departamento"
-                        name="departamento"
-                        value={createWasher.departamento}
+                        name="department"
+                        value={createWasher.department}
                         onChange={(e) => handleChangeCreateWasher(e)}
                         inputMode="numeric"
                     />
@@ -99,6 +103,7 @@ const ModalWasher2 = ({
                     colorScheme="teal"
                     ml={3}
                     isDisabled={isButtonDisabledWasher2}
+                    isLoading={loading}
                     onClick={(e) => {
                         handleSubmit(e)
                         setStepperStep({
@@ -111,11 +116,6 @@ const ModalWasher2 = ({
                     Guardar
                 </Button>
             </ModalFooter>
-            {/* <ModalFooter>
-                <Button colorScheme="teal" mr={3} onClick={(e) => handleSubmit(e)}>
-                    Guardar
-                </Button>
-            </ModalFooter> */}
         </>
     )
 }

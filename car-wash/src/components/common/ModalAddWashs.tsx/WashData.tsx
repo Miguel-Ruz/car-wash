@@ -129,7 +129,7 @@ const WashData = ({
         <Button
           colorScheme="teal"
           ml={3}
-          onClick={(e) => handleSubmitCreateWash(e)}
+          onClick={() => handleSubmitCreateWash()}
           isLoading={loading}
           isDisabled={isButtonDisabledWashData}
         >

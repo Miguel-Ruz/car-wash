@@ -27,10 +27,11 @@ type Props = {
         exp_id_date: string,
         phone_number: string,
         address: string
-        ciudad: string,
-        departamento: string
+        city: string,
+        department: string
     },
     handleChangeCreateWasher: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleDocumentoChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 const steps = [
     { title: "Paso 1", description: "Datos del lavador" },
@@ -44,7 +45,8 @@ const ModalWasher1 = ({
     isButtonDisabled,
     setStepperStep,
     createWasher,
-    handleChangeCreateWasher
+    handleChangeCreateWasher,
+    handleDocumentoChange
 }: Props) => {
     return (
         <>
@@ -69,7 +71,7 @@ const ModalWasher1 = ({
                         value={createWasher.phone_number}
                         onChange={(e) => handleChangeCreateWasher(e)}
                         type='number'
-                        min={9}
+                        pattern="^(\+57)?[ -]?[1-9][0-9]{9}$"
                     />
                 </FormControl>
 
@@ -79,7 +81,7 @@ const ModalWasher1 = ({
                         placeholder="Escribe el NO. de identificación"
                         name="documento"
                         value={createWasher.documento}
-                        onChange={(e) => handleChangeCreateWasher(e)}
+                        onChange={(e) => handleDocumentoChange(e)}
                         inputMode="numeric"
                     />
                 </FormControl>
