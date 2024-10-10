@@ -13,6 +13,7 @@ import {
 import Steper from '../Stepper';
 
 type Props = {
+    editWasher: any
     handleSubmit: (e: any) => any
     indexStep: number
     handleModalClose: () => void;
@@ -46,11 +47,12 @@ const ModalWasher1 = ({
     setStepperStep,
     createWasher,
     handleChangeCreateWasher,
-    handleDocumentoChange
+    handleDocumentoChange,
+    editWasher
 }: Props) => {
     return (
         <>
-            <ModalHeader>Datos del lavador</ModalHeader>
+            <ModalHeader>{!editWasher ? "Datos del lavador" : "Editar datos del lavador"}</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
                 <FormControl>

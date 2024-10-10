@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 
 //fetch
@@ -31,6 +31,9 @@ type Props = {
   isButtonDisabledWasher2: boolean,
   handleSubmit: (e: any) => void,
   loading: boolean
+  editWasher: any
+  setCreateWasher: any
+  setValidation: any
 };
 
 const ModalAddWasherr = ({
@@ -44,7 +47,10 @@ const ModalAddWasherr = ({
   createWasher,
   isButtonDisabledWasher2,
   handleSubmit,
-  loading
+  loading,
+  editWasher,
+  setCreateWasher,
+  setValidation
 }: Props) => {
   const handleDocumentoChange = (e: any) => {
     const value = e.target.value;
@@ -56,7 +62,28 @@ const ModalAddWasherr = ({
     }
   };
 
-
+  useEffect(() => {
+    if (editWasher) {
+      setCreateWasher({
+        name: editWasher.name || "",
+        documento: editWasher.documentId || "",
+        exp_id_date: editWasher.exp_id_date || "",
+        phone_number: editWasher.phone_number || "",
+        address: editWasher.address || "",
+        city: editWasher.city || "",
+        department: editWasher.department || ""
+      })
+      setValidation({
+        name: !!editWasher.name,
+        documento: !!editWasher.documentId,
+        exp_id_date: !!editWasher.exp_id_date,
+        phone_number: !!editWasher.phone_number,
+        address: !!editWasher.address,
+        city: !!editWasher.city,
+        department: !!editWasher.department
+      })
+    }
+  }, [editWasher])
 
   const { washerData1, washerData2 } = stepperStep;
   return (
@@ -72,6 +99,7 @@ const ModalAddWasherr = ({
             setStepperStep={setStepperStep}
             createWasher={createWasher}
             handleChangeCreateWasher={handleChangeCreateWasher}
+            editWasher={editWasher}
           />
           : <ModalWasher2
             indexStep={2}
@@ -84,6 +112,7 @@ const ModalAddWasherr = ({
             handleChangeCreateWasher={handleChangeCreateWasher}
             isButtonDisabledWasher2={isButtonDisabledWasher2}
             loading={loading}
+            editWasher={editWasher}
           />
       }
     </>

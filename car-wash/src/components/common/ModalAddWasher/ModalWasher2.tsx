@@ -33,6 +33,7 @@ type Props = {
     handleChangeCreateWasher: (e: React.ChangeEvent<HTMLInputElement>) => void;
     isButtonDisabledWasher2: boolean,
     loading: boolean
+    editWasher: any
 }
 const steps = [
     { title: "Paso 1", description: "Datos del lavador" },
@@ -48,11 +49,12 @@ const ModalWasher2 = ({
     createWasher,
     handleChangeCreateWasher,
     isButtonDisabledWasher2,
-    loading
+    loading,
+    editWasher
 }: Props) => {
     return (
         <>
-            <ModalHeader>Datos del lavador</ModalHeader>
+            <ModalHeader>{!editWasher ? 'Datos del lavador' : 'Editar datos del lavador'}</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
                 <FormControl>

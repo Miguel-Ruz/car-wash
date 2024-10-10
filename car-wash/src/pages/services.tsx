@@ -4,7 +4,6 @@ import { DashboardLayout } from "../components";
 import TopBar from "../components/common/TopBar";
 import {
   Box,
-  Button,
   Flex,
   Input,
   Stack,
@@ -21,10 +20,14 @@ import {
 import ButtonRegister from "../components/common/ButtonRegister";
 import useFetchData from "../hooks/useFetchData";
 import postWashType from "../services/postWashType";
+import putWashType from "../services/putWashType";
+import deleteWashType from "../services/deleteWashType";
 import { hasValuesOnObject } from "../utilitis/validators";
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import ModalAddWashType from "../components/common/ModalAddWashType/ModalAddWashType";
 import ModalGlobal from "../components/common/ModalGlobal";
+import Toast from "../components/common/Toast/Toast";
+import MenuEditDelete from "../components/common/MenuEditDelete/MenuEditDelete";
 
 
 type Props = {};
@@ -39,6 +42,7 @@ const services = (props: Props) => {
   const [washTypeFilter, setWashTypeFilter] = useState("");
   const [loading, setLoading] = useState(false); // Estado para rastrear la carga de la solicitud
   const [washType, setWashType] = useState({});
+  const [editWashService, setEditWashService] = useState(null);
 
   const [createWashType, setCreateWashType] = useState({
     name: "",
@@ -55,6 +59,19 @@ const services = (props: Props) => {
     !createWashType.name ||
     !createWashType.value
 
+  const ToastHandleSuccess = () => {
+    Toast({ message: 'El servicio se guardó con éxito', type: 'success' });
+  };
+
+  const ToastHandleError = () => {
+    Toast({ message: 'No se pudo guardar el servicio', type: 'error', retry: true });
+  };
+
+  const handleEditClick = (item: any) => {
+    setEditWashService(item); // Guardar el item seleccionado
+    onOpen(); // Abrir el modal
+  };
+
 
   const handleChangeCreateWashType = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -68,13 +85,13 @@ const services = (props: Props) => {
 
     setValidation({
       ...validation,
-      [name]: value,
+      [name]: value.trim() !== '',
     });
   };
 
   // Función para verificar si el formulario es válido
   const isFormValid = () => {
-    return Object.values(validation).every((isValid) => isValid);
+    return validation.name && validation.value;
   };
 
   const handleSubmitCreateWash = async (e: React.FormEvent) => {
@@ -84,16 +101,33 @@ const services = (props: Props) => {
       setLoading(true); // Establece el estado de carga a verdadero antes de la petición
       //fetch
       try {
-        const response = await postWashType({ ...createWashType });
+        let response;
+        if (editWashService) {
+          // Si estamos editando, utilizamos putWashType
+          response = await putWashType(createWashType, editWashService.id); // Asumiendo que editWashService tiene un campo `id`
+          Toast({ message: 'El servicio se editó con éxito', type: 'success', });
+
+        } else {
+          // Si estamos creando un nuevo servicio
+          response = await postWashType({ ...createWashType });
+          if (hasValuesOnObject(response)) {
+            ToastHandleSuccess()
+            setTimeout(
+              () => window.location.reload(),
+              3000
+            )
+          }
+        }
 
         // La petición se ha completado exitosamente
         setWashType(response);
-        if (hasValuesOnObject(washType)) {
-          toast('hola')
-        }
+
+
+
       } catch (error) {
         // Hubo un error en la petición
         console.error("Error:", error);
+        ToastHandleError()
       } finally {
         setLoading(false); // Establece el estado de carga a falso después de la petición
       }
@@ -102,23 +136,46 @@ const services = (props: Props) => {
     }
   };
 
+  const handleDeleteWashType = async (id: any) => {
+    setLoading(true);
+    let response;
+    try {
+      response = await deleteWashType(id); // Asumiendo que editWashService tiene un campo `id`
+      Toast({ message: 'El servicio se eliminó con éxito', type: 'success', });
+      setTimeout(
+        () => window.location.reload(),
+        3000
+      )
+
+
+      if (hasValuesOnObject(response.error)) {
+        Toast({ message: 'No se pudo eliminar el servicio', type: 'error', });
+      }
+    } catch (error) {
+      // Hubo un error en la petición
+      console.error("Error:", error);
+
+      Toast({ message: 'No se pudo eliminar el servicio', type: 'error', });
+    } finally {
+      setLoading(false); // Establece el estado de carga a falso después de la petición
+    }
+  }
+
 
   //open modal
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const urlListWashtype = "http://localhost:3000/api/washtype";
   const listWashType = useFetchData(urlListWashtype);
-
   //filtrar por nombre
-  const filteredData = listWashType?.data?.data?.filter((item) => {
+  const filteredData = listWashType?.data?.filter((item) => {
     const matchesNames = item.name.includes(nameFilter);
-    // Obtener el valor seleccionado del Select
-    const matchesWashTypes = item.washType.includes(washTypeFilter);
 
     // El elemento se incluirá en los resultados si cumple ambas condiciones
-    return matchesNames && matchesWashTypes;
+    return matchesNames;
   });
 
+  console.log(createWashType, 'createWashType')
   //modal logic
   var handleModalClose = () => {
     onClose(); // Cierra el modal
@@ -131,7 +188,7 @@ const services = (props: Props) => {
 
         <Flex p="32px 24px" justifyContent="space-between">
           <Flex gap="1rem" alignItems="center">
-            <Text onClick={() => toast.success('El servicio se guardó con éxito')}>Buscar</Text>
+            <Text onClick={() => ToastHandleSuccess()}>Buscar</Text>
             <Input
               placeholder="Nombre"
               size="md"
@@ -156,27 +213,20 @@ const services = (props: Props) => {
               </Thead>
               <Tbody>
                 {filteredData &&
-                  filteredData?.map((item: { id: string, washType: string, price: string }) => (
+                  filteredData?.map((item) => (
                     <Tr key={item.id}>
                       <Td>
-                        {item?.washType}
+                        {item?.name}
                       </Td>
-                      <Td>{item?.price}</Td>
+                      <Td>{item?.value}</Td>
                       <Td>
                         <Stack align="end">
-                          <Button
-                            w="108px"
-                            h="32px"
-                            bg="buttonColor"
-                            color="mainColor"
-                            fontSize="14px"
-                            p="18px 12px"
-                            fontWeight="semibold"
-                            _hover={{ bg: "#258685" }}
-                          // onClick={() => finishWash(item?.id)}
-                          >
-                            Finalizar
-                          </Button>
+                          <MenuEditDelete
+                            handleEditClick={handleEditClick}
+                            handleDelete={handleDeleteWashType}
+                            item={item}
+                          />
+
                         </Stack>
                       </Td>
                     </Tr>
@@ -188,21 +238,7 @@ const services = (props: Props) => {
             position="bottom-center"
             reverseOrder={false}
             gutter={8}
-            containerClassName=""
-            containerStyle={{}}
-
-            toastOptions={{
-              // Define default options
-              className: '',
-              duration: 5000,
-              style: {
-                background: '#38A169',
-                color: '#fff',
-              },
-              success: {
-                duration: 1500,
-              }
-            }}
+            toastOptions={{ duration: 4000 }}
           />
 
         </Box>
@@ -213,6 +249,9 @@ const services = (props: Props) => {
             handleSubmitCreateWash={handleSubmitCreateWash}
             createWashType={createWashType}
             isButtonDisabled={isButtonDisabled}
+            editWashService={editWashService}
+            setCreateWashType={setCreateWashType}
+            setValidation={setValidation}
           />
         </ModalGlobal>
       </>

@@ -5,8 +5,13 @@ import {
   IconButton,
   Input,
   Stack,
+  Tab,
   Table,
   TableContainer,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Tbody,
   Td,
   Text,
@@ -22,6 +27,9 @@ import { DashboardLayout } from "../components";
 import TopBar from "../components/common/TopBar";
 import ButtonRegister from "../components/common/ButtonRegister";
 import postWasher from "../services/postWashers";
+import deleteWasher from "../services/deleteWasher";
+import patchWasher from "../services/patchWasher";
+
 
 
 //Custom hooks
@@ -30,6 +38,10 @@ import useFetchData from "../hooks/useFetchData";
 //utils
 import ModalAddWasherr from "../components/common/ModalAddWasher/ModalAddWasherr";
 import ModalGlobal from "../components/common/ModalGlobal";
+import MenuEditDelete from "../components/common/MenuEditDelete/MenuEditDelete";
+import Toast from "../components/common/Toast/Toast";
+import { hasValuesOnObject } from "../utilitis/validators";
+import { Toaster } from "react-hot-toast";
 
 type Props = {};
 
@@ -40,6 +52,12 @@ interface Washer {
   washes: number;
   status: boolean;
   earnings: number;
+  address: string
+  city: string
+  exp_id_date: string
+  department: string
+  phone_number: string
+
 }
 // Define un tipo para los estados de validación de los campos
 type ValidationState = {
@@ -57,6 +75,7 @@ const lavadores = (props: Props) => {
   const [documentFilter, setDocumentFilter] = useState("");
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false); // Estado para rastrear la carga de la solicitud
+  const [editWasher, setEditWasher] = useState(null);
 
 
   const [createWasher, setCreateWasher] = useState({
@@ -84,8 +103,6 @@ const lavadores = (props: Props) => {
     washerData2: false,
   });
 
-  console.log(createWasher, 'hoa')
-
   const handleChangeCreateWasher = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -106,7 +123,7 @@ const lavadores = (props: Props) => {
     return Object.values(validation).every((isValid) => isValid);
   };
 
-
+  console.log(createWasher, 'createWasher')
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -116,6 +133,7 @@ const lavadores = (props: Props) => {
     if (isFormValid()) {
       setLoading(true);
       try {
+        let data
         const dataToSend = {
           name: createWasher.name,
           phone_number: createWasher.phone_number,
@@ -125,16 +143,25 @@ const lavadores = (props: Props) => {
           department: createWasher.department,
           address: createWasher.address,
         };
+        if (editWasher) {
+          data = await patchWasher(dataToSend, editWasher?.id)
+          Toast({ message: 'El lavador se editó con éxito', type: 'success', });
+        } else {
+          //fetch
+          data = await postWasher(dataToSend);
+          // cerrar modal y recargar la pagina
+          if (data) {
+            Toast({ message: 'El lavador se guardó con éxito', type: 'success' });
+          }
+        }
+        setTimeout(
+          () => window.location.reload(),
+          3000
+        )
 
-        //fetch
-        const data = await postWasher(dataToSend);
-        //cerrar modal y recargar la pagina
-        // if (data) {
-        //   handleModalClose();
-        //   window.location.reload();
-        // }
       } catch (error) {
         console.error("Error:", error);
+        Toast({ message: 'No se pudo guardar el lavador', type: 'error', retry: true });
       } finally {
         setLoading(false); // Establece el estado de carga a falso después de la petición
       }
@@ -148,6 +175,37 @@ const lavadores = (props: Props) => {
   let handleModalClose = () => {
     onClose(); // Cierra el modal
   };
+
+  const handleEditClick = (item: any) => {
+    setEditWasher(item); // Guardar el item seleccionado
+    onOpen(); // Abrir el modal
+  };
+  console.log(editWasher, 'editwasher')
+  // delete washer
+  const handleDeleteWasher = async (id: any) => {
+    setLoading(true);
+    let response;
+    try {
+      response = await deleteWasher(id); // Asumiendo que editWashService tiene un campo `id`
+      Toast({ message: 'El Lavador se eliminó con éxito', type: 'success', });
+      setTimeout(
+        () => window.location.reload(),
+        2500
+      )
+
+      if (hasValuesOnObject(response.error)) {
+        Toast({ message: 'No se pudo eliminar el lavador', type: 'error', });
+      }
+    } catch (error) {
+      // Hubo un error en la petición
+      console.error("Error:", error);
+
+      Toast({ message: 'No se pudo eliminar el lavador', type: 'error', });
+    } finally {
+      setLoading(false); // Establece el estado de carga a falso después de la petición
+    }
+  }
+
   //open modal
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -183,85 +241,128 @@ const lavadores = (props: Props) => {
     !createWasher.city ||
     !createWasher.department ||
     !createWasher.address;
-
+  console.log(filteredData, 'filteredData')
   return (
     <DashboardLayout>
       <>
         <TopBar title="Lavadores" />
+        <Tabs>
+          <TabList p="16px 24px 0 24px">
+            <Tab>Reporte diario</Tab>
+            <Tab>Reporte semanal</Tab>
+          </TabList>
 
-        <HStack p="32px 24px" display="flex" justifyContent="space-between">
-          <HStack spacing="16px">
-            <Text color="fontNavColor">Buscar</Text>
-            <Input
-              placeholder="Documento"
-              w="206px"
-              h="36px"
-              fontWeight="14px"
-              focusBorderColor="buttonColor"
-              value={documentFilter}
-              onChange={(e) => setDocumentFilter(e.target.value)}
-            />
-            <Input
-              placeholder="Nombre"
-              w="206px"
-              h="36px"
-              fontWeight="14px"
-              focusBorderColor="buttonColor"
-              value={nameFilter}
-              onChange={(e) => setNameFilter(e.target.value)}
-            />
-            <IconButton
-              aria-label="busqueda"
-              icon={<FiSearch />}
-              variant="outline"
-              color="buttonColor"
-              h="36px"
-            />
-          </HStack>
-          <Box>
-            <ButtonRegister onOpen={onOpen} title="Registrar nuevo lavador" />
-          </Box>
-        </HStack>
+          <TabPanels>
+            <TabPanel>
 
-        <Box px="24px">
-          <TableContainer border="1px solid #E2E8F0" borderRadius="12px">
-            <Table size="md">
-              <Thead>
-                <Tr bg="primaryColor">
-                  <Th w={thWidth}>Nombre</Th>
-                  <Th w={thWidth} textAlign="center" isNumeric>
-                    Documentos
-                  </Th>
-                  <Th w={thWidth} isNumeric>
-                    Lavados del dia
-                  </Th>
-                  <Th w={thWidth} isNumeric>
-                    Ganancia
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filteredData?.map((washer: Washer) => {
-                  return (
-                    <Tr key={washer.id}>
-                      <Td>{washer?.name}</Td>
-                      <Td isNumeric>{washer?.documentId}</Td>
-                      <Td isNumeric>{washer?.washes}</Td>
-                      <Td isNumeric>{washer?.earnings}</Td>
-                      {/* <Td>
+              <HStack p="32px 24px" display="flex" justifyContent="space-between">
+                <HStack spacing="16px">
+                  <Text color="fontNavColor">Buscar</Text>
+                  <Input
+                    placeholder="Documento"
+                    w="206px"
+                    h="36px"
+                    fontWeight="14px"
+                    focusBorderColor="buttonColor"
+                    value={documentFilter}
+                    onChange={(e) => setDocumentFilter(e.target.value)}
+                  />
+                  <Input
+                    placeholder="Nombre"
+                    w="206px"
+                    h="36px"
+                    fontWeight="14px"
+                    focusBorderColor="buttonColor"
+                    value={nameFilter}
+                    onChange={(e) => setNameFilter(e.target.value)}
+                  />
+                  <IconButton
+                    aria-label="busqueda"
+                    icon={<FiSearch />}
+                    variant="outline"
+                    color="buttonColor"
+                    h="36px"
+                  />
+                </HStack>
+                <Box>
+                  <ButtonRegister onOpen={onOpen} title="Registrar nuevo lavador" />
+                </Box>
+              </HStack>
+
+              <Box px="24px">
+                <TableContainer border="1px solid #E2E8F0" borderRadius="12px">
+                  <Table size="md">
+                    <Thead>
+                      <Tr bg="primaryColor">
+                        <Th w={thWidth}>Nombre</Th>
+                        <Th w={thWidth} >
+                          DOCUMENTO
+                        </Th>
+                        <Th w={thWidth} >
+                          EXPEDICIÓN
+                        </Th>
+                        <Th w={thWidth} >
+                          TELÉFONO
+                        </Th>
+                        <Th w={thWidth} >
+                          DIRECCIÓN
+                        </Th>
+                        <Th w={thWidth} >
+                          LAVADOS HOY
+                        </Th>
+                        <Th w={thWidth} >
+                          GANANCIA
+                        </Th>
+                        <Th >
+                        </Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {filteredData?.map((washer: Washer) => {
+                        return (
+                          <Tr key={washer.id}>
+                            <Td>{washer?.name}</Td>
+                            <Td>{washer?.documentId}</Td>
+                            <Td>{washer?.exp_id_date}</Td>
+                            <Td>{washer?.phone_number}</Td>
+                            <Td>{washer?.city}, {washer.address}</Td>
+                            <Td>{washer?.washes}</Td>
+                            <Td>{washer?.earnings}</Td>
+                            <Td>
+                              <Stack align="end">
+                                <MenuEditDelete
+                                  handleEditClick={handleEditClick}
+                                  handleDelete={handleDeleteWasher}
+                                  item={washer}
+                                />
+
+                              </Stack>
+                            </Td>
+                            {/* <Td>
                         <Tooltip hasArrow label="Cerrar día" placement="auto">
                           <Stack align="end">
                             <FiCalendar cursor="pointer" color="#319795" />{" "}
                           </Stack>
                         </Tooltip>
                       </Td> */}
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
-          </TableContainer>
-        </Box>
+                          </Tr>
+                        );
+                      })}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+                <Toaster
+                  position="bottom-center"
+                  reverseOrder={false}
+                  gutter={8}
+                  toastOptions={{ duration: 5000 }}
+                />
+              </Box>
+            </TabPanel>
+
+          </TabPanels>
+        </Tabs>
+
         <ModalGlobal handleModalClose={handleModalClose} isOpen={isOpen}>
           <ModalAddWasherr
             initialRef={null}
@@ -275,10 +376,13 @@ const lavadores = (props: Props) => {
             isButtonDisabledWasher2={isButtonDisabledWasher2}
             handleSubmit={handleSubmit}
             loading={loading}
+            editWasher={editWasher}
+            setCreateWasher={setCreateWasher}
+            setValidation={setValidation}
           />
         </ModalGlobal>
       </>
-    </DashboardLayout>
+    </DashboardLayout >
   );
 };
 

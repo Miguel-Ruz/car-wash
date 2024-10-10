@@ -1,5 +1,5 @@
 import { Box, Button, FormControl, FormLabel, Input, ModalBody, ModalCloseButton, ModalFooter, ModalHeader } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 type Props = {
     handleModalClose: () => void;
@@ -7,6 +7,9 @@ type Props = {
     createWashType: { name: string, value: string }
     isButtonDisabled: boolean
     handleSubmitCreateWash: (e: React.FormEvent) => Promise<void>,
+    editWashService: any,
+    setCreateWashType: any,
+    setValidation: any
 }
 
 const ModalAddWashType = ({
@@ -15,11 +18,28 @@ const ModalAddWashType = ({
     handleSubmitCreateWash,
     createWashType,
     isButtonDisabled,
-
+    editWashService,
+    setCreateWashType,
+    setValidation
 }: Props) => {
+
+    useEffect(() => {
+        if (editWashService) {
+            setCreateWashType({
+                name: editWashService.name || '',
+                value: editWashService.value || '',
+            });
+            // Actualiza la validación también
+            setValidation({
+                name: !!editWashService.name,
+                value: !!editWashService.value,
+            });
+        }
+    }, [editWashService]);
+
     return (
         <>
-            <ModalHeader>Nuevo servicio</ModalHeader>
+            <ModalHeader>{editWashService ? 'Editar servicio' : 'Nuevo servicio'}</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
                 <FormControl>
