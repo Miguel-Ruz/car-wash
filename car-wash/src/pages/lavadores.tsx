@@ -15,10 +15,8 @@ import {
   Tbody,
   Td,
   Text,
-  Tfoot,
   Th,
   Thead,
-  Tooltip,
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
