@@ -15,13 +15,14 @@ import {
   Tbody,
   Td,
   Text,
+  Tfoot,
   Th,
   Thead,
   Tooltip,
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiCalendar, FiPlus, FiSearch } from "react-icons/fi";
 import { DashboardLayout } from "../components";
 import TopBar from "../components/common/TopBar";
@@ -29,6 +30,7 @@ import ButtonRegister from "../components/common/ButtonRegister";
 import postWasher from "../services/postWashers";
 import deleteWasher from "../services/deleteWasher";
 import patchWasher from "../services/patchWasher";
+import getWashWeekly from "../services/getWashWeekly";
 
 
 
@@ -76,6 +78,7 @@ const lavadores = (props: Props) => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false); // Estado para rastrear la carga de la solicitud
   const [editWasher, setEditWasher] = useState(null);
+  const [washWeekly, setWashWeekly] = useState(null);
 
 
   const [createWasher, setCreateWasher] = useState({
@@ -215,6 +218,21 @@ const lavadores = (props: Props) => {
   const url = "http://localhost:3000/api/washer";
   const { data } = useFetchData(url);
 
+  // weekly
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getWashWeekly()
+      setWashWeekly(data)
+    }
+
+    try {
+      fetchData()
+    } catch (error) {
+      console.log(error)
+    }
+  }, [])
+
+  console.log(washWeekly, 'washWeekly')
   //filtro
   const filteredData = data
     ? data?.filter((item) => {
@@ -338,13 +356,6 @@ const lavadores = (props: Props) => {
 
                               </Stack>
                             </Td>
-                            {/* <Td>
-                        <Tooltip hasArrow label="Cerrar día" placement="auto">
-                          <Stack align="end">
-                            <FiCalendar cursor="pointer" color="#319795" />{" "}
-                          </Stack>
-                        </Tooltip>
-                      </Td> */}
                           </Tr>
                         );
                       })}
@@ -359,7 +370,44 @@ const lavadores = (props: Props) => {
                 />
               </Box>
             </TabPanel>
-
+            <TabPanel>
+              <TableContainer
+                border="1px solid #E2E8F0"
+                borderRadius="12px"
+              >
+                <Table>
+                  <Thead>
+                    <Tr bg="primaryColor">
+                      <Th w={thWidth}>Nombre</Th>
+                      <Th w={thWidth} >
+                        DOCUMENTO
+                      </Th>
+                      <Th w={thWidth} >
+                        EXPEDICIÓN
+                      </Th>
+                      <Th w={thWidth} >
+                        SEMANA
+                      </Th>
+                      <Th w={thWidth} >
+                        LAVADOS
+                      </Th>
+                      <Th w={thWidth} >
+                        GANANCIA
+                      </Th>
+                      <Th >
+                      </Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody fontSize="14px">
+                    <Tr>
+                      <Td fontWeight="500">item.week</Td>
+                      <Td fontWeight="500">item.washerCount</Td>
+                      <Td >item.total</Td>
+                    </Tr>
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </TabPanel>
           </TabPanels>
         </Tabs>
 
