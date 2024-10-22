@@ -12,31 +12,54 @@ import { Icon } from "@chakra-ui/react";
 
 type Props = {
   handleModalClose: () => void;
+  title: string,
+  text: string
+  buttonPrimaryText: string,
+  buttonSecondaryText: string,
+  mainFunction: any
+  isCancelar: boolean;
+  isDelete: boolean
 };
 
-const SuccessData = ({ handleModalClose }: Props) => {
+const AlternativeModal = ({
+  handleModalClose,
+  title,
+  text,
+  buttonPrimaryText,
+  buttonSecondaryText,
+  mainFunction,
+  isCancelar,
+  isDelete
+}: Props) => {
   return (
     <>
       <ModalHeader display="flex" alignItems="center">
-        <Box mr="3">
-          <Icon as={BsFillCheckCircleFill} w={8} h={8} color="#C6F6D5" />
-        </Box>
-        Datos del cliente
+        {!isDelete &&
+          <Box mr="3">
+            <Icon as={BsFillCheckCircleFill} w={8} h={8} color="#C6F6D5" />
+          </Box>
+        }
+
+        {title}
       </ModalHeader>
       <ModalCloseButton />
-      <ModalBody pb={6} mr={2}>
-        <Box>Ahora puedes ver el estado del servicio y ver detalles.</Box>
-        <ModalFooter>
-          <Button variant="outline" isDisabled>
-            Editar
+      <ModalBody pb={6}>
+        <Box>{text}</Box>
+        <ModalFooter pb={0} pr={0}>
+          <Button variant="outline" onClick={() => {
+            isCancelar && handleModalClose()
+          }}>
+            {buttonSecondaryText}
           </Button>
-          {/* fata recargar la pagina cuando se cierre le modal de exito */}
-          <Button colorScheme="teal" ml={3} onClick={() => {
-            handleModalClose()
-            window.location.reload();
-          }
-          }>
-            Cerrar
+          <Button
+            colorScheme={isDelete ? "red" : "teal"}
+            ml={3}
+            onClick={() => {
+              // handleModalClose()
+              mainFunction()
+            }
+            }>
+            {buttonPrimaryText}
           </Button>
         </ModalFooter>
       </ModalBody>
@@ -44,4 +67,4 @@ const SuccessData = ({ handleModalClose }: Props) => {
   );
 };
 
-export default SuccessData;
+export default AlternativeModal;

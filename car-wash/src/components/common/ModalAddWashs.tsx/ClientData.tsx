@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Button,
@@ -28,6 +28,9 @@ type Props = {
     paymentType: string;
   };
   isButtonDisabled: boolean;
+  editWash: any;
+  setCreateWash: any;
+  setValidation: any;
 };
 
 const steps = [
@@ -42,7 +45,27 @@ const ClientData = ({
   handleChangeCreateWash,
   createWash,
   isButtonDisabled,
+  editWash,
+  setCreateWash,
+  setValidation
 }: Props) => {
+
+  useEffect(() => {
+    if (editWash) {
+      setCreateWash({
+        clientName: editWash.clientName || '',
+        vehicleType: editWash.vehicleType || '',
+        licensePlate: editWash.licensePlate || '',
+      });
+      // Actualiza la validación también
+      setValidation({
+        clientName: !!editWash.clientName,
+        vehicleType: !!editWash.vehicleType,
+        licensePlate: !!editWash.licensePlate
+      });
+    }
+  }, [editWash]);
+
   return (
     <>
       <ModalHeader>Datos del cliente</ModalHeader>

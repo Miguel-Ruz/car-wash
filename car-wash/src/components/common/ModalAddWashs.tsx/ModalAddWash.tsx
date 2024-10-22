@@ -16,7 +16,7 @@ type Props = {
     clientName: string;
     vehicleType: string;
     licensePlate: string;
-    washType: string;
+    washType: string
     rate: string;
     paymentType: string;
   };
@@ -25,6 +25,12 @@ type Props = {
   handleSubmitCreateWash: (e: React.FormEvent) => Promise<void>;
   loading: boolean;
   isButtonDisabledWashData: boolean;
+  listWashType: any;
+  selectedWashType: any;
+  setSelectedWashType: any;
+  editWash: any;
+  setCreateWash: any
+  setValidation: any
 };
 
 const ModalAddWash = ({
@@ -36,9 +42,14 @@ const ModalAddWash = ({
   listWasher,
   isButtonDisabled,
   handleSubmitCreateWash,
-
+  listWashType,
   loading,
   isButtonDisabledWashData,
+  selectedWashType,
+  setSelectedWashType,
+  editWash,
+  setCreateWash,
+  setValidation
 }: Props) => {
   const { clientData, washData } = stepperStep;
   return (
@@ -51,6 +62,10 @@ const ModalAddWash = ({
           handleChangeCreateWash={handleChangeCreateWash}
           createWash={createWash}
           isButtonDisabled={isButtonDisabled}
+          editWash={editWash}
+          setCreateWash={setCreateWash}
+          setValidation={setValidation}
+
         />
       ) : (
         <WashData
@@ -62,6 +77,12 @@ const ModalAddWash = ({
           handleSubmitCreateWash={handleSubmitCreateWash}
           loading={loading}
           isButtonDisabledWashData={isButtonDisabledWashData}
+          listWashType={listWashType}
+          selectedWashType={selectedWashType}
+          setSelectedWashType={setSelectedWashType}
+          editWash={editWash}
+          setCreateWash={setCreateWash}
+          setValidation={setValidation}
         />
       )}
     </>

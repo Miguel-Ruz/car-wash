@@ -105,28 +105,33 @@ const services = (props: Props) => {
         if (editWashService) {
           // Si estamos editando, utilizamos putWashType
           response = await putWashType(createWashType, editWashService.id); // Asumiendo que editWashService tiene un campo `id`
-          Toast({ message: 'El servicio se editó con éxito', type: 'success', });
-
+          if (response.success) {
+            Toast({ message: 'El servicio se editó con éxito', type: 'success', });
+          } else {
+            Toast({ message: 'El servicio no se pudo editar', type: 'error', });
+          }
+          setTimeout(
+            () => window.location.reload(),
+            1000
+          )
         } else {
           // Si estamos creando un nuevo servicio
           response = await postWashType({ ...createWashType });
-          if (hasValuesOnObject(response)) {
+          if (response.success) {
             ToastHandleSuccess()
-            setTimeout(
-              () => window.location.reload(),
-              3000
-            )
+          } else {
+            ToastHandleError()
           }
+          setTimeout(
+            () => window.location.reload(),
+            1000
+          )
         }
-
         // La petición se ha completado exitosamente
         setWashType(response);
 
-
-
       } catch (error) {
         // Hubo un error en la petición
-        console.error("Error:", error);
         ToastHandleError()
       } finally {
         setLoading(false); // Establece el estado de carga a falso después de la petición
@@ -141,20 +146,17 @@ const services = (props: Props) => {
     let response;
     try {
       response = await deleteWashType(id); // Asumiendo que editWashService tiene un campo `id`
-      Toast({ message: 'El servicio se eliminó con éxito', type: 'success', });
-      setTimeout(
-        () => window.location.reload(),
-        3000
-      )
-
-
-      if (hasValuesOnObject(response.error)) {
+      if (response.success) {
+        Toast({ message: 'El servicio se eliminó con éxito', type: 'success', });
+      } else {
         Toast({ message: 'No se pudo eliminar el servicio', type: 'error', });
       }
+      setTimeout(
+        () => window.location.reload(),
+        1000
+      )
     } catch (error) {
       // Hubo un error en la petición
-      console.error("Error:", error);
-
       Toast({ message: 'No se pudo eliminar el servicio', type: 'error', });
     } finally {
       setLoading(false); // Establece el estado de carga a falso después de la petición
@@ -175,7 +177,6 @@ const services = (props: Props) => {
     return matchesNames;
   });
 
-  console.log(createWashType, 'createWashType')
   //modal logic
   var handleModalClose = () => {
     onClose(); // Cierra el modal

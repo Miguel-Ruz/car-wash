@@ -124,7 +124,6 @@ const lavadores = (props: Props) => {
     return Object.values(validation).every((isValid) => isValid);
   };
 
-  console.log(createWasher, 'createWasher')
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -145,23 +144,29 @@ const lavadores = (props: Props) => {
           address: createWasher.address,
         };
         if (editWasher) {
+          //fetch
           data = await patchWasher(dataToSend, editWasher?.id)
-          Toast({ message: 'El lavador se editó con éxito', type: 'success', });
+          if (data.success) {
+            Toast({ message: 'El lavador se editó con éxito', type: 'success', });
+          } else {
+            Toast({ message: 'No se pudo editar el lavador', type: 'error', retry: true });
+          }
         } else {
           //fetch
           data = await postWasher(dataToSend);
           // cerrar modal y recargar la pagina
-          if (data) {
+          if (data.success) {
             Toast({ message: 'El lavador se guardó con éxito', type: 'success' });
+          } else {
+            Toast({ message: 'No se pudo guardar el lavador', type: 'error', retry: true });
           }
         }
         setTimeout(
           () => window.location.reload(),
-          3000
+          1000
         )
 
       } catch (error) {
-        console.error("Error:", error);
         Toast({ message: 'No se pudo guardar el lavador', type: 'error', retry: true });
       } finally {
         setLoading(false); // Establece el estado de carga a falso después de la petición
@@ -181,26 +186,24 @@ const lavadores = (props: Props) => {
     setEditWasher(item); // Guardar el item seleccionado
     onOpen(); // Abrir el modal
   };
-  console.log(editWasher, 'editwasher')
+
   // delete washer
   const handleDeleteWasher = async (id: any) => {
     setLoading(true);
     let response;
     try {
       response = await deleteWasher(id); // Asumiendo que editWashService tiene un campo `id`
-      Toast({ message: 'El Lavador se eliminó con éxito', type: 'success', });
-      setTimeout(
-        () => window.location.reload(),
-        2500
-      )
-
-      if (hasValuesOnObject(response.error)) {
+      if (response.success) {
+        Toast({ message: 'El Lavador se eliminó con éxito', type: 'success', });
+      } else {
         Toast({ message: 'No se pudo eliminar el lavador', type: 'error', });
       }
+      setTimeout(
+        () => window.location.reload(),
+        1000
+      )
     } catch (error) {
       // Hubo un error en la petición
-      console.error("Error:", error);
-
       Toast({ message: 'No se pudo eliminar el lavador', type: 'error', });
     } finally {
       setLoading(false); // Establece el estado de carga a falso después de la petición
@@ -230,7 +233,6 @@ const lavadores = (props: Props) => {
     }
   }, [])
 
-  console.log(washWeekly, 'washWeekly')
   //filtro
   const filteredData = data
     ? data?.filter((item) => {
@@ -257,7 +259,7 @@ const lavadores = (props: Props) => {
     !createWasher.city ||
     !createWasher.department ||
     !createWasher.address;
-  console.log(filteredData, 'filteredData')
+
   return (
     <DashboardLayout>
       <>
@@ -397,11 +399,23 @@ const lavadores = (props: Props) => {
                     </Tr>
                   </Thead>
                   <Tbody fontSize="14px">
-                    <Tr>
-                      <Td fontWeight="500">item.week</Td>
-                      <Td fontWeight="500">item.washerCount</Td>
-                      <Td >item.total</Td>
-                    </Tr>
+                    {
+                      washWeekly && washWeekly?.map((weekly) => {
+                        return (
+                          <Tr key={weekly.id}>
+                            <Td fontWeight="500">{weekly.name}</Td>
+                            <Td fontWeight="500">{weekly.documentId}</Td>
+                            <Td fontWeight="500">{weekly.exp_id_date}</Td>
+                            <Td fontWeight="500">aca va la semana</Td>
+                            <Td fontWeight="500">{weekly.washes}</Td>
+                            <Td fontWeight="500">{weekly.earnings}</Td>
+
+                            <Td>?</Td>
+                          </Tr>
+                        )
+                      })
+                    }
+
                   </Tbody>
                 </Table>
               </TableContainer>

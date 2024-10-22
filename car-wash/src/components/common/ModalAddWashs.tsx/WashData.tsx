@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -12,17 +12,18 @@ import {
   Select,
 } from "@chakra-ui/react";
 import Steper from "../Stepper";
+import { formatCurrency } from "../../../utilitis/formatter";
 
 type Props = {
   indexStep: number;
   setStepperStep: (value: { clientData: boolean; washData: boolean }) => void;
-  handleChangeCreateWash: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleChangeCreateWash: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   createWash: {
     washerId: string;
     clientName: string;
     vehicleType: string;
     licensePlate: string;
-    washType: string;
+    washType: string
     rate: string;
     paymentType: string;
   };
@@ -30,6 +31,12 @@ type Props = {
   handleSubmitCreateWash: () => void;
   loading: boolean;
   isButtonDisabledWashData: boolean;
+  listWashType: any
+  selectedWashType: any
+  setSelectedWashType: any;
+  editWash: any;
+  setCreateWash: any;
+  setValidation: any;
 };
 
 const steps = [
@@ -46,7 +53,61 @@ const WashData = ({
   handleSubmitCreateWash,
   loading,
   isButtonDisabledWashData,
+  listWashType,
+  selectedWashType,
+  setSelectedWashType,
+  editWash,
+  setCreateWash,
+  setValidation
 }: Props) => {
+  // Actualiza el rate cuando se selecciona un washType
+  const handleWashTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target;
+
+    // Encuentra el tipo de lavado seleccionado y su rate
+    const selectedWashType = listWashType?.data?.find(
+      (item: any) => item.name === value
+    );
+
+
+    if (selectedWashType) {
+      setSelectedWashType(selectedWashType)
+      // // Primero actualizamos el washType
+      // handleChangeCreateWash({
+      //   target: {
+      //     name: "washType",
+      //     value: selectedWashType.name, // El nombre del tipo de lavado
+      //   },
+      // } as React.ChangeEvent<HTMLSelectElement>); // Tipamos el evento manualmente
+
+      // Luego actualizamos el rate (precio del lavado)
+      handleChangeCreateWash({
+        target: {
+          name: "rate",
+          value: selectedWashType.value, // El valor del tipo de lavado
+        },
+      } as React.ChangeEvent<HTMLSelectElement>); // Tipamos el evento manualmente
+    }
+  };
+
+  useEffect(() => {
+    if (editWash) {
+      setCreateWash({
+        washType: editWash.washType || '',
+        paymentType: editWash.paymentType || '',
+        washerId: editWash.washerId || '',
+        rate: editWash.rate || '',
+      });
+      // Actualiza la validación también
+      setValidation({
+        washType: !!editWash.clientName,
+        paymentType: !!editWash.paymentType,
+        washerId: !!editWash.washerId,
+        rate: !!editWash.rate,
+      });
+    }
+  }, [editWash]);
+
   return (
     <>
       <ModalHeader>Datos del lavado</ModalHeader>
@@ -58,10 +119,21 @@ const WashData = ({
             placeholder="Selecciona el tipo de lavado o servicio"
             name="washType"
             value={createWash.washType}
-            onChange={(e) => handleChangeCreateWash(e)}
+            onChange={(e) => {
+              handleWashTypeChange(e)
+              handleChangeCreateWash(e)
+            }}
           >
-            <option value="FULL">FULL</option>
-            <option value="DRY">DRY</option>
+            {listWashType &&
+              listWashType?.data?.map((item: any) => (
+                <option
+                  key={item.id}
+                  value={item.name}
+                >
+                  {item.name}
+                </option>
+              ))
+            }
           </Select>
         </FormControl>
 
@@ -71,7 +143,7 @@ const WashData = ({
             placeholder="Selecciona el tipo de pago"
             name="paymentType"
             value={createWash.paymentType}
-            onChange={(e) => handleChangeCreateWash(e)}
+            onChange={handleChangeCreateWash}
           >
             <option value="Efectivo">Efectivo</option>
             <option value="Tarjeta">Tarjeta</option>
@@ -85,7 +157,7 @@ const WashData = ({
             placeholder="Selecciona al lavador"
             name="washerId"
             value={createWash.washerId}
-            onChange={(e) => handleChangeCreateWash(e)}
+            onChange={handleChangeCreateWash}
           >
             {listWasher &&
               listWasher?.data?.map((item: any) => (
@@ -98,15 +170,12 @@ const WashData = ({
 
         <FormControl mt={4}>
           <FormLabel fontWeight="bold">Valor del lavado</FormLabel>
-          <Select
-            placeholder="Tipo de lavado"
+          <Input
             name="rate"
-            value={createWash.washType === "FULL" ? "13000" : createWash.washType === "DRY" ? "15000" : ""}
+            value={formatCurrency(selectedWashType.value || editWash && editWash.rate)}
+            readOnly
             disabled
-          >
-            <option value="13000">FULL - $13.000</option>
-            <option value="15000">DRY - $15.000</option>
-          </Select>
+          />
         </FormControl>
 
         <Box pt="8">
@@ -129,7 +198,7 @@ const WashData = ({
         <Button
           colorScheme="teal"
           ml={3}
-          onClick={() => handleSubmitCreateWash()}
+          onClick={handleSubmitCreateWash}
           isLoading={loading}
           isDisabled={isButtonDisabledWashData}
         >

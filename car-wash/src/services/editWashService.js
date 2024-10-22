@@ -1,13 +1,11 @@
-async function patchWash(idWash) {
+async function editWashService(dataToSend, idWash) {
   try {
     const requestOptions = {
       method: "PATCH", // Usa el método especificado (GET o POST)
       headers: {
         "Content-Type": "application/json", // Ajusta los encabezados según sea necesario
       },
-      body: JSON.stringify({
-        status: "COMPLETED",
-      }),
+      body: dataToSend ? JSON.stringify(dataToSend) : undefined, // Si se proporciona dataToSend, lo incluimos en el cuerpo
     };
     const res = await fetch(
       `http://localhost:3000/api/wash?id=${idWash}`,
@@ -23,4 +21,4 @@ async function patchWash(idWash) {
   }
 }
 
-export default patchWash;
+export default editWashService;

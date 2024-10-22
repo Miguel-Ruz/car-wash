@@ -4,10 +4,14 @@ async function deleteWasher(id) {
       method: "DELETE", // Usa el método especificado (GET o POST)
     };
     const res = await fetch(`http://localhost:3000/api/washer?id=${id}`, requestOptions);
+    
+    if (!res.ok) {
+      throw new Error(`Error ${res.status}: ${res.statusText}`);
+    }
     const data = await res.json();
-    return data;
+    return { success: true, data };
   } catch (error) {
-    return error;
+    return { success: false, error: error.message };
   }
 }
 

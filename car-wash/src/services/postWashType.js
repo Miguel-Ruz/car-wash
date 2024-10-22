@@ -8,10 +8,13 @@ async function postWashType(dataToSend) {
       body: dataToSend ? JSON.stringify(dataToSend) : undefined, // Si se proporciona dataToSend, lo incluimos en el cuerpo
     };
     const res = await fetch("http://localhost:3000/api/washtype", requestOptions);
+    if (!res.ok) {
+      throw new Error(`Error ${res.status}: ${res.statusText}`);
+    }
     const data = await res.json();
-    return data;
+    return { success: true, data };
   } catch (error) {
-    return error;
+    return { success: false, error: error.message };
   }
 }
 

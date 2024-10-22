@@ -12,7 +12,6 @@ const Admin = (props: Props) => {
 
   const handleClickUser = (e: React.MouseEvent<HTMLDivElement>) => {
     setActiveButton(true);
-    console.log(e);
   };
 
   const login = () => {

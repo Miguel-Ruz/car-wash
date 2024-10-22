@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DashboardLayout } from "../components";
 import TopBar from "../components/common/TopBar";
 import CardsInfoDashboardContainer from "../components/dashboard/CardsInfoDashboardContainer";
@@ -31,9 +31,15 @@ import ModalGlobal from "../components/common/ModalGlobal";
 import ModalAddWash from "../components/common/ModalAddWashs.tsx/ModalAddWash";
 import postWash from "../services/postWash";
 import patchWash from "../services/patchWash";
+import deleteWash from "../services/deleteWash";
+import editWashService from "../services/editWashService";
 import { hasValuesOnObject } from "../utilitis/validators";
 import SuccessData from "../components/common/ModalAddWashs.tsx/SuccessData";
 import { MdArrowDropDown } from "react-icons/md";
+import { Toaster } from "react-hot-toast";
+import Toast from "../components/common/Toast/Toast";
+import MenuEditDelete from "../components/common/MenuEditDelete/MenuEditDelete";
+import AlternativeModal from "../components/common/ModalAddWashs.tsx/SuccessData";
 
 type Props = {};
 type STATUS = {
@@ -80,6 +86,14 @@ const lavados = (props: Props) => {
     paymentType: false,
   });
   const [washEstado, setWashEstado] = useState<string>('NO_PAGO')
+  const [selectedWashType, setSelectedWashType] = useState({
+    name: "",
+    value: ""
+  })
+  const [editWash, setEditWash] = useState(null);
+  const [isDeleteWash, setIsDeleteWash] = useState(false);
+  const [idDeleteWash, setIdDeleteWash] = useState("")
+  const [washPagado, setWashPagado] = useState()
 
   const isButtonDisabled =
     !createWash.clientName ||
@@ -89,6 +103,7 @@ const lavados = (props: Props) => {
   const isButtonDisabledWashData =
     !createWash.washerId ||
     !createWash.washType ||
+    !createWash.rate ||
     !createWash.paymentType;
 
   // Función para validar y formatear la placa
@@ -138,13 +153,29 @@ const lavados = (props: Props) => {
       setLoading(true); // Establece el estado de carga a verdadero antes de la petición
       //fetch
       try {
-        const response = await postWash({ ...createWash, rate: createWash.washType === "FULL" ? "13000" : createWash.washType === "DRY" ? "15000" : "" });
-
-        // La petición se ha completado exitosamente
-        setWash(response);
+        let response;
+        if (editWash) {
+          response = await editWashService(createWash, editWash.id);
+          if (response.success) {
+            Toast({ message: 'El servicio se editó con éxito', type: 'success', });
+          } else {
+            Toast({ message: 'No se pudo editar el lavado', type: 'error', retry: true });
+          }
+        } else {
+          response = await postWash({ ...createWash, rate: selectedWashType.value });
+          // La petición se ha completado exitosamente
+          setWash(response);
+          if (response.success) {
+            Toast({ message: 'El lavado se guardó con éxito', type: 'success', });
+          }
+        }
+        setTimeout(
+          () => window.location.reload(),
+          1000
+        )
       } catch (error) {
         // Hubo un error en la petición
-        console.error("Error:", error);
+        Toast({ message: 'No se pudo guardar el lavado', type: 'error', retry: true });
       } finally {
         setLoading(false); // Establece el estado de carga a falso después de la petición
       }
@@ -156,13 +187,71 @@ const lavados = (props: Props) => {
   const finishWash = async (id: string) => {
     try {
       const response = await patchWash(id);
-      console.log(response, "completed, listo");
+      setWashPagado(response.data)
+      if (response.success) {
+        Toast({ message: 'El servicio se pagó con éxito', type: 'success', });
+      } else {
+        Toast({ message: 'No se pudo pagar el servicio', type: 'error', });
+      }
+      setTimeout(
+        () => window.location.reload(),
+        1000
+      )
     } catch (error) {
-      console.log(error, "error");
+      Toast({ message: 'No se pudo pagar el servicio', type: 'error', });
+      setTimeout(
+        () => window.location.reload(),
+        1000
+      )
     } finally {
-      location.reload();
+      // location.reload();
     }
   };
+
+  const handleDeleteWash = async (id: any) => {
+    setLoading(true);
+    let response;
+    try {
+      response = await deleteWash(id); // Asumiendo que editWashService tiene un campo `id`
+      if (response.success) {
+        Toast({ message: 'El servicio se eliminó con éxito', type: 'success', });
+        setTimeout(
+          () => window.location.reload(),
+          1000
+        )
+      } else {
+        Toast({ message: 'No se pudo eliminar el servicio', type: 'error', });
+      }
+    } catch (error) {
+      // Hubo un error en la petición
+      Toast({ message: 'No se pudo eliminar el servicio', type: 'error', });
+    } finally {
+      setLoading(false); // Establece el estado de carga a falso después de la petición
+    }
+
+  }
+
+  const handleOpenModalDeleteWash = (id: any) => {
+    setIsDeleteWash(true)
+    setIdDeleteWash(id)
+    onOpen()
+  }
+
+  useEffect(() => {
+    if (selectedWashType.value) {
+      setCreateWash({
+        ...createWash,
+        rate: selectedWashType.value
+      })
+    }
+  }, [selectedWashType])
+
+  //editar lavado
+  const handleEditClick = (item: any) => {
+    setEditWash(item); // Guardar el item seleccionado
+    onOpen(); // Abrir el modal
+  }
+
 
 
   //open modal
@@ -178,6 +267,9 @@ const lavados = (props: Props) => {
   const urlListWasher = "http://localhost:3000/api/washer";
   const listWasher = useFetchData(urlListWasher);
 
+  const urlListWashtype = "http://localhost:3000/api/washtype";
+  const listWashType = useFetchData(urlListWashtype);
+
   //filtrar por placas
   const filteredData = listWashes?.data?.data?.filter((item) => {
     const matchesPlacas = item.licensePlate.includes(placasFilter);
@@ -190,26 +282,83 @@ const lavados = (props: Props) => {
 
   const thWidth = "18vw";
 
-  const badgeStatus: STATUS = {
-    NO_PAGO: "red",
-    PAGADO: "green",
-  };
+  const BadgeStatus = (id) => {
+    // Estado para manejar el estado del pago
+    const [washEstado, setWashEstado] = useState("NO_PAGO");
 
-  const BadgeStatus = () => {
-    const statusBadge = badgeStatus[washEstado] || null;
-    console.log(washEstado, 'hola')
+    // Ref para almacenar el estado inicial y evitar loops
+    const isManualChange = useRef(true);
+
+    // Definir los colores de acuerdo al estado
+    const badgeStatus: STATUS = {
+      NO_PAGO: "red",
+      PAGADO: "green",
+    };
+
+    // Obtener el color basado en el estado actual
+    const statusBadge = badgeStatus[washEstado];
+
+    // Al cargar, verificamos si el estado es "COMPLETED" y lo actualizamos
+    useEffect(() => {
+      const washItem = filteredData?.find((item) => item.id === id?.id);
+      if (washItem && washItem.status === "COMPLETED") {
+        setWashEstado("PAGADO");  // Si el estado es "COMPLETED", lo establecemos como "PAGADO"
+      }
+    }, [id, filteredData]);
+
+    // Manejar los cambios en el estado manualmente
+    useEffect(() => {
+      if (isManualChange.current) {
+        if (washEstado === "PAGADO") {
+          finishWash(id?.id);  // Llamamos al servicio solo si el usuario cambia el estado manualmente a "PAGADO"
+        }
+      }
+      // Reiniciar el flag para el próximo cambio
+      isManualChange.current = false;
+    }, [washEstado, id]);
+
+    // Función para manejar el cambio en el Select
+    const handleEstadoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      isManualChange.current = true;  // Marcamos que el cambio es manual
+      setWashEstado(e.target.value);  // Actualizamos el estado del pago
+    };
+
     return (
-      <Select bg={statusBadge} icon={<MdArrowDropDown />} onChange={(e) => setWashEstado(e.target.value)}>
-        <option value='NO PAGO'>NO PAGO</option>
-        <option value='PAGADO'>PAGADO</option>
+      <Select
+        bg={statusBadge}  // Cambia el color de fondo basado en el estado actual
+        icon={<MdArrowDropDown />}
+        value={washEstado}
+        onChange={handleEstadoChange}  // Actualiza el estado del pago
+      >
+        <option value="NO_PAGO">NO PAGO</option>
+        <option value="PAGADO">PAGADO</option>
       </Select>
     );
   };
 
   //modal logic
   var handleModalClose = () => {
+    setCreateWash({
+      washerId: "",
+      clientName: "",
+      vehicleType: "",
+      licensePlate: "",
+      washType: "",
+      rate: "",
+      paymentType: "",
+    }); // Restablecer el formulario
+    setValidation({
+      washerId: false,
+      clientName: false,
+      vehicleType: false,
+      licensePlate: false,
+      washType: false,
+      paymentType: false,
+    }); // Restablecer el estado de validación si es necesario
+    setEditWash(null); // Resetear editWash en caso de que esté editando
     onClose(); // Cierra el modal
   };
+
   return (
     <DashboardLayout>
       <>
@@ -276,17 +425,12 @@ const lavados = (props: Props) => {
                       <Td>{item?.washer.name}</Td>
                       <Td>{item?.washType}</Td>
                       <Td>
-                        <BadgeStatus />
+                        <BadgeStatus id={item?.id} />
                       </Td>
                       <Td>
                         <Tooltip placement="auto">
                           <Stack align="end">
-                            {/* <FiCalendar
-                              onClick={onOpen}
-                              cursor="pointer"
-                              color="#319795"
-                            /> */}{" "}
-                            <Button
+                            {/* <Button
                               w="108px"
                               h="32px"
                               bg="buttonColor"
@@ -298,8 +442,15 @@ const lavados = (props: Props) => {
                               onClick={() => finishWash(item?.id)}
                             >
                               Finalizar
-                            </Button>
-                            {/* ALINEAR A LA DERECHA ESTE BENDITO ICONITO. ME HIZO BOTAR EL CHUPO */}
+                            </Button> */}
+                            <Stack align="end">
+                              <MenuEditDelete
+                                handleEditClick={handleEditClick}
+                                handleDelete={() => handleOpenModalDeleteWash(item.id)}
+                                item={item}
+                              />
+
+                            </Stack>
                           </Stack>
                         </Tooltip>
                       </Td>
@@ -308,24 +459,48 @@ const lavados = (props: Props) => {
               </Tbody>
             </Table>
           </TableContainer>
+          <Toaster
+            position="bottom-center"
+            reverseOrder={false}
+            gutter={8}
+            toastOptions={{ duration: 4000 }}
+          />
         </Box>
         <ModalGlobal handleModalClose={handleModalClose} isOpen={isOpen} wash={wash}>
-          {hasValuesOnObject(wash) ? (
-            <SuccessData handleModalClose={handleModalClose} />
-          ) : (
-            <ModalAddWash
-              handleModalClose={handleModalClose}
-              setStepperStep={setStepperStep}
-              stepperStep={stepperStep}
-              handleChangeCreateWash={handleChangeCreateWash}
-              createWash={createWash}
-              listWasher={listWasher}
-              isButtonDisabled={isButtonDisabled}
-              handleSubmitCreateWash={handleSubmitCreateWash}
-              loading={loading}
-              isButtonDisabledWashData={isButtonDisabledWashData}
-            />
-          )}
+          {
+            isDeleteWash
+              ? <AlternativeModal
+                title="¿Seguro deseas eliminar este lavado?"
+                text="Esta acción no se puede deshacer. Si continúas, el lavado se eliminará de forma permanente."
+                buttonPrimaryText="Si, eliminar"
+                buttonSecondaryText="Cancelar"
+                mainFunction={() => handleDeleteWash(idDeleteWash)}
+                handleModalClose={handleModalClose}
+                isCancelar
+                isDelete
+              />
+              :
+              <ModalAddWash
+                handleModalClose={handleModalClose}
+                setStepperStep={setStepperStep}
+                stepperStep={stepperStep}
+                handleChangeCreateWash={handleChangeCreateWash}
+                createWash={createWash}
+                listWasher={listWasher}
+                isButtonDisabled={isButtonDisabled}
+                handleSubmitCreateWash={handleSubmitCreateWash}
+                loading={loading}
+                isButtonDisabledWashData={isButtonDisabledWashData}
+                listWashType={listWashType}
+                selectedWashType={selectedWashType}
+                setSelectedWashType={setSelectedWashType}
+                editWash={editWash}
+                setCreateWash={setCreateWash}
+                setValidation={setValidation}
+
+              />
+          }
+
         </ModalGlobal>
       </>
     </DashboardLayout>
